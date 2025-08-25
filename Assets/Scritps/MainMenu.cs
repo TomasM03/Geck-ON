@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour, IConnectionCallbacks
@@ -15,19 +16,14 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
     public TMP_Text instructionsText;
 
     [Header("Configuration")]
-    public string gameSceneName = "GameScene";
+    public string gameSceneName = "Prueba1";
 
     private bool isConnecting = false;
 
     void Start()
     {
-        // Configure initial UI
         ConfigureUI();
-
-        // Add Photon callback
         PhotonNetwork.AddCallbackTarget(this);
-
-        // Configure Photon
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
@@ -38,24 +34,17 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
 
     void ConfigureUI()
     {
-        // Configure instructions text
         if (instructionsText != null)
-        {
             instructionsText.text = "Enter your name and connect to the server";
-        }
 
-        // Configure button
         if (connectButton != null)
         {
             connectButton.onClick.AddListener(ConnectToServer);
             connectButton.interactable = true;
         }
 
-        // Configure input field with default value
         if (nameInputField != null)
-        {
             nameInputField.text = "Player" + Random.Range(1, 1000);
-        }
 
         UpdateStatusUI("Ready to connect");
     }
@@ -66,7 +55,6 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
 
         string playerName = nameInputField.text.Trim();
 
-        // Validate name
         if (string.IsNullOrEmpty(playerName))
         {
             UpdateStatusUI("You must enter a name!");
@@ -79,10 +67,8 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
             return;
         }
 
-        // Configure player name
         PhotonNetwork.LocalPlayer.NickName = playerName;
 
-        // Connect
         isConnecting = true;
         connectButton.interactable = false;
         UpdateStatusUI("Connecting to Photon...");
@@ -94,9 +80,7 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
     void UpdateStatusUI(string message)
     {
         if (statusText != null)
-        {
             statusText.text = "Status: " + message;
-        }
         Debug.Log("Status: " + message);
     }
 
@@ -107,7 +91,6 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
         Debug.Log("Connected to Photon Master Server");
         UpdateStatusUI("Connected! Joining room...");
 
-        // Join or create room automatically
         PhotonNetwork.JoinOrCreateRoom("GameRoom", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
     }
 
@@ -116,8 +99,7 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
         Debug.Log("Joined room! Loading game...");
         UpdateStatusUI("Connected successfully! Loading game...");
 
-        // Load game scene
-        PhotonNetwork.LoadLevel(gameSceneName);
+        SceneManager.LoadScene(gameSceneName);
     }
 
     public void OnDisconnected(DisconnectCause cause)
@@ -140,15 +122,12 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
             connectButton.interactable = true;
     }
 
-    // Methods required by IConnectionCallbacks but not used
     public void OnConnected() { }
     public void OnRegionListReceived(RegionHandler regionHandler) { }
-    public void OnCustomAuthenticationResponse(System.Collections.Generic.Dictionary<string, object> data) { }
+    public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { }
     public void OnCustomAuthenticationFailed(string debugMessage) { }
 
     #endregion
-
-    #region Public methods for buttons
 
     public void ExitGame()
     {
@@ -162,7 +141,6 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
 
     public void OnNameChanged()
     {
-        // Called when player types in the input field
         if (nameInputField != null && connectButton != null)
         {
             bool validName = !string.IsNullOrEmpty(nameInputField.text.Trim()) &&
@@ -170,6 +148,4 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
             connectButton.interactable = validName && !isConnecting;
         }
     }
-
-    #endregion
 }

@@ -310,29 +310,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1044427734}
-  - component: {fileID: 1044427733}
+  - component: {fileID: 1044427735}
   m_Layer: 0
-  m_Name: NetworkManager
+  m_Name: Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1044427733
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1044427732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3291fb2b0dc4ef41b42d0e731116e3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jugadorPrefab: {fileID: 1784921582958196558, guid: 95848ba4e364b4e469cc2f188188a381, type: 3}
-  puntoSpawn: {fileID: 1696853352}
-  mostrarLogs: 1
 --- !u!4 &1044427734
 Transform:
   m_ObjectHideFlags: 0
@@ -348,6 +333,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1044427735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044427732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 292e2b05f8e6210499a7e03065a95aff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 1784921582958196558, guid: 95848ba4e364b4e469cc2f188188a381, type: 3}
+  spawnPoint: {fileID: 1696853352}
 --- !u!1 &1696853351
 GameObject:
   m_ObjectHideFlags: 0
