@@ -1,25 +1,28 @@
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections.Generic;
 
 public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingCallbacks
 {
-    [Header("Configuración")]
-    public GameObject jugadorPrefab;
-    public Transform puntoSpawn;
+    [Header("Configuration")]
+    public GameObject playerPrefab;
+    public Transform spawnPoint;
 
     [Header("Debug")]
-    public bool mostrarLogs = true;
+    public bool showLogs = true;
 
     void Start()
     {
-        // Configurar Photon
+        // Configure Photon
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.AddCallbackTarget(this);
 
-        // Conectar a Photon
-        ConectarAPhoton();
+        // Only connect automatically if we're NOT in the main menu
+        // The main menu will handle the connection
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            ConnectToPhoton();
+        }
     }
 
     void OnDestroy()
@@ -27,86 +30,100 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
-    void ConectarAPhoton()
+    void ConnectToPhoton()
     {
-        if (mostrarLogs) Debug.Log("Conectando a Photon...");
+        if (showLogs) Debug.Log("Connecting to Photon...");
 
-        // Configurar la región (opcional, usa la más cercana automáticamente)
+        // Configure region (optional, uses closest automatically)
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    #region Callbacks de Photon
+    #region Photon Callbacks
 
     public void OnConnectedToMaster()
     {
-        if (mostrarLogs) Debug.Log("Conectado al servidor maestro de Photon");
+        if (showLogs) Debug.Log("Connected to Photon Master Server");
 
-        // Unirse o crear una sala automáticamente
-        PhotonNetwork.JoinOrCreateRoom("SalaJuego", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
+        // Join or create room automatically
+        PhotonNetwork.JoinOrCreateRoom("GameRoom", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
     }
 
     public void OnJoinedRoom()
     {
-        if (mostrarLogs) Debug.Log("Unido a la sala: " + PhotonNetwork.CurrentRoom.Name);
-        if (mostrarLogs) Debug.Log("Jugadores en la sala: " + PhotonNetwork.CurrentRoom.PlayerCount);
+        if (showLogs)
+        {
+            Debug.Log("=== PLAYER CONNECTED ===");
+            Debug.Log("Joined room: " + PhotonNetwork.CurrentRoom.Name);
+            Debug.Log("MY ID: " + PhotonNetwork.LocalPlayer.ActorNumber);
+            Debug.Log("MY NAME: " + PhotonNetwork.LocalPlayer.NickName);
+            Debug.Log("Players in room: " + PhotonNetwork.CurrentRoom.PlayerCount);
+            Debug.Log("========================");
+        }
 
-        // Spawnear el jugador cuando nos unimos a la sala
-        SpawnearJugador();
+        // Spawn player when we join the room
+        SpawnPlayer();
     }
 
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
-        if (mostrarLogs) Debug.Log("Nuevo jugador entró: " + newPlayer.NickName);
+        if (showLogs)
+        {
+            Debug.Log("=== NEW PLAYER ===");
+            Debug.Log("Name: " + newPlayer.NickName);
+            Debug.Log("ID: " + newPlayer.ActorNumber);
+            Debug.Log("Total players: " + PhotonNetwork.CurrentRoom.PlayerCount);
+            Debug.Log("==================");
+        }
     }
 
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
-        if (mostrarLogs) Debug.Log("Jugador salió: " + otherPlayer.NickName);
+        if (showLogs) Debug.Log("Player left: " + otherPlayer.NickName);
     }
 
     public void OnDisconnected(DisconnectCause cause)
     {
-        if (mostrarLogs) Debug.LogWarning("Desconectado de Photon: " + cause);
+        if (showLogs) Debug.LogWarning("Disconnected from Photon: " + cause);
     }
 
-    // Métodos requeridos por las interfaces (pero no los usamos)
+    // Required methods by interfaces (but we don't use them)
     public void OnConnected() { }
     public void OnRegionListReceived(RegionHandler regionHandler) { }
-    public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { }
+    public void OnCustomAuthenticationResponse(System.Collections.Generic.Dictionary<string, object> data) { }
     public void OnCustomAuthenticationFailed(string debugMessage) { }
     public void OnCreatedRoom() { }
     public void OnCreateRoomFailed(short returnCode, string message) { }
     public void OnJoinRoomFailed(short returnCode, string message) { }
     public void OnJoinRandomFailed(short returnCode, string message) { }
     public void OnLeftRoom() { }
-    public void OnFriendListUpdate(List<FriendInfo> friendList) { }
+    public void OnFriendListUpdate(System.Collections.Generic.List<FriendInfo> friendList) { }
 
     #endregion
 
-    void SpawnearJugador()
+    void SpawnPlayer()
     {
-        Vector3 posicionSpawn = puntoSpawn != null ? puntoSpawn.position : Vector3.zero;
+        Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : Vector3.zero;
 
-        // Agregar algo de variación en la posición para evitar que spawnen en el mismo lugar
-        posicionSpawn += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+        // Add some variation in position to avoid spawning in the same place
+        spawnPosition += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
 
-        // Instanciar el jugador a través de la red
-        GameObject miJugador = PhotonNetwork.Instantiate(jugadorPrefab.name, posicionSpawn, Quaternion.identity);
+        // Instantiate player through the network
+        GameObject myPlayer = PhotonNetwork.Instantiate(playerPrefab.name, spawnPosition, Quaternion.identity);
 
-        if (mostrarLogs) Debug.Log("Jugador spawneado: " + miJugador.name);
+        if (showLogs) Debug.Log("Player spawned: " + myPlayer.name);
     }
 
     void OnGUI()
     {
-        // UI simple para mostrar el estado de la conexión
+        // Simple UI to show connection status
         GUILayout.BeginArea(new Rect(10, 10, 300, 200));
 
-        GUILayout.Label("Estado de Photon: " + PhotonNetwork.NetworkClientState);
+        GUILayout.Label("Photon Status: " + PhotonNetwork.NetworkClientState);
 
         if (PhotonNetwork.InRoom)
         {
-            GUILayout.Label("Sala: " + PhotonNetwork.CurrentRoom.Name);
-            GUILayout.Label("Jugadores: " + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers);
+            GUILayout.Label("Room: " + PhotonNetwork.CurrentRoom.Name);
+            GUILayout.Label("Players: " + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers);
         }
 
         GUILayout.EndArea();
