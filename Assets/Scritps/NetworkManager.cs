@@ -8,7 +8,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        // Singleton para que no se destruya al cambiar de escena
         if (Instance == null)
         {
             Instance = this;
@@ -21,42 +20,31 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void Start()
+    public void LeaveRoom()
     {
-        if (!PhotonNetwork.IsConnected)
+        if (PhotonNetwork.InRoom)
         {
-            PhotonNetwork.ConnectUsingSettings();
-            Debug.Log("Conectando a Photon...");
+            PhotonNetwork.LeaveRoom();
+            Debug.Log("Leaving room...");
         }
     }
 
-    public void JoinRandomRoom()
+    public void Disconnect()
     {
-        if (PhotonNetwork.IsConnectedAndReady)
+        if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.JoinRandomRoom();
-            Debug.Log("Intentando unirse a un Room...");
-        }
-        else
-        {
-            Debug.LogWarning("No estás conectado aún, no se puede unir a un Room.");
+            PhotonNetwork.Disconnect();
+            Debug.Log("Disconnecting from Photon...");
         }
     }
 
-    public override void OnConnectedToMaster()
+    public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("Conectado al Master Server.");
+        Debug.Log($"Player joined: {newPlayer.NickName}");
     }
 
-    public override void OnJoinRandomFailed(short returnCode, string message)
+    public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        Debug.Log("No había Room, creando uno nuevo...");
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 4 });
-    }
-
-    public override void OnJoinedRoom()
-    {
-        Debug.Log("Entraste a un Room.");
-        PhotonNetwork.LoadLevel("Prueba1"); // ?? IMPORTANTE: usa LoadLevel de Photon
+        Debug.Log($"Player left: {otherPlayer.NickName}");
     }
 }

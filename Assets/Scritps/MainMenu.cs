@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
@@ -7,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour, IConnectionCallbacks
+public class MainMenu : MonoBehaviourPunCallbacks
 {
     [Header("UI Elements")]
     public TMP_InputField nameInputField;
@@ -23,13 +22,7 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
     void Start()
     {
         ConfigureUI();
-        PhotonNetwork.AddCallbackTarget(this);
         PhotonNetwork.AutomaticallySyncScene = true;
-    }
-
-    void OnDestroy()
-    {
-        PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     void ConfigureUI()
@@ -74,6 +67,8 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
         UpdateStatusUI("Connecting to Photon...");
 
         Debug.Log("Trying to connect with name: " + playerName);
+
+        PhotonNetwork.GameVersion = "1.0";
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -86,25 +81,34 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
 
     #region Photon Callbacks
 
-    public void OnConnectedToMaster()
+    public override void OnConnectedToMaster()
     {
-        Debug.Log("Connected to Photon Master Server");
-        UpdateStatusUI("Connected! Joining room...");
+        Debug.Log("? Connected to Master Server");
+        UpdateStatusUI("Connected! Joining Lobby...");
 
-        PhotonNetwork.JoinOrCreateRoom("GameRoom", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
+        PhotonNetwork.JoinLobby();
     }
 
-    public void OnJoinedRoom()
+    public override void OnJoinedLobby()
     {
-        Debug.Log("Joined room! Loading game...");
+        Debug.Log("? Joined Lobby, now joining/creating room...");
+        UpdateStatusUI("Joined Lobby! Now joining room...");
+
+        RoomOptions options = new RoomOptions { MaxPlayers = 4 };
+        PhotonNetwork.JoinOrCreateRoom("GameRoom", options, TypedLobby.Default);
+    }
+
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("? Joined room! Loading game...");
         UpdateStatusUI("Connected successfully! Loading game...");
 
         SceneManager.LoadScene(gameSceneName);
     }
 
-    public void OnDisconnected(DisconnectCause cause)
+    public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.LogWarning("Disconnected: " + cause);
+        Debug.LogWarning("?? Disconnected: " + cause);
         UpdateStatusUI("Connection error: " + cause);
 
         isConnecting = false;
@@ -112,20 +116,14 @@ public class MainMenu : MonoBehaviour, IConnectionCallbacks
             connectButton.interactable = true;
     }
 
-    public void OnJoinRoomFailed(short returnCode, string message)
+    public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        Debug.LogError("Failed to join room: " + message);
-        UpdateStatusUI("Failed to join room");
+        Debug.LogError("? Failed to join room: " + message + " (code: " + returnCode + ")");
+        UpdateStatusUI("Failed to join room, creating new...");
 
-        isConnecting = false;
-        if (connectButton != null)
-            connectButton.interactable = true;
+        RoomOptions options = new RoomOptions { MaxPlayers = 4 };
+        PhotonNetwork.CreateRoom("GameRoom", options);
     }
-
-    public void OnConnected() { }
-    public void OnRegionListReceived(RegionHandler regionHandler) { }
-    public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { }
-    public void OnCustomAuthenticationFailed(string debugMessage) { }
 
     #endregion
 

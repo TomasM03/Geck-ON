@@ -24,9 +24,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
         // Configure material based on whether it's our player or not
         ConfigurePlayer();
 
-        // Add the nickname display
-        gameObject.AddComponent<Nickname>();
-
         // If it's not our player, disable some components for optimization
         if (!pv.IsMine)
         {
