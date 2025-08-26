@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     public static NetworkManager Instance;
 
     void Awake()
@@ -21,6 +22,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             return;
         }
 =======
+=======
+>>>>>>> parent of 2d2f8a7 (Nickname/TMP)
     [Header("Configuración")]
     public GameObject jugadorPrefab;
     public Transform puntoSpawn;
@@ -36,6 +39,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         // Conectar a Photon
         ConectarAPhoton();
+<<<<<<< HEAD
+>>>>>>> parent of 2d2f8a7 (Nickname/TMP)
+=======
 >>>>>>> parent of 2d2f8a7 (Nickname/TMP)
     }
 
@@ -130,6 +136,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             GUILayout.Label("Sala: " + PhotonNetwork.CurrentRoom.Name);
             GUILayout.Label("Jugadores: " + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers);
+<<<<<<< HEAD
+>>>>>>> parent of 2d2f8a7 (Nickname/TMP)
+=======
 >>>>>>> parent of 2d2f8a7 (Nickname/TMP)
         }
     }
