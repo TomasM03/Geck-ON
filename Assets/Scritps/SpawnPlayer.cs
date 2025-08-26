@@ -9,14 +9,6 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
     public GameObject playerPrefab;
     public Transform spawnPoint;
 
-    private void Start()
-    {
-        // Si ya estás dentro de una sala y la escena cargó, spawnea el jugador
-        if (PhotonNetwork.InRoom)
-        {
-            SpawnPlayers();
-        }
-    }
 
     public override void OnJoinedRoom()
     {
