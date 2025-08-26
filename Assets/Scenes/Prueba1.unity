@@ -342,11 +342,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1044427732}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 292e2b05f8e6210499a7e03065a95aff, type: 3}
+  m_Script: {fileID: 11500000, guid: e3291fb2b0dc4ef41b42d0e731116e3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 1784921582958196558, guid: 95848ba4e364b4e469cc2f188188a381, type: 3}
-  spawnPoint: {fileID: 1696853352}
+  jugadorPrefab: {fileID: 1784921582958196558, guid: 95848ba4e364b4e469cc2f188188a381, type: 3}
+  puntoSpawn: {fileID: 1696853352}
+  mostrarLogs: 1
 --- !u!1 &1696853351
 GameObject:
   m_ObjectHideFlags: 0

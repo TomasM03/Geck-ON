@@ -24,19 +24,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         // Configurar el material según si es nuestro jugador o no
         ConfigurarJugador();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        // If it's not our player, disable some components for optimization
-=======
         // Si no es nuestro jugador, desactivar algunos componentes para optimizar
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
-=======
-        // Si no es nuestro jugador, desactivar algunos componentes para optimizar
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
-=======
-        // Si no es nuestro jugador, desactivar algunos componentes para optimizar
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
         if (!pv.IsMine)
         {
             // Desactivar la cámara si tiene una
@@ -107,8 +95,8 @@ public class PlayerController : MonoBehaviour, IPunObservable
         {
             GUILayout.BeginArea(new Rect(Screen.width - 200, 10, 180, 100));
             GUILayout.Label("Controles:");
-            GUILayout.Label("W/S - Adelante/Atrás");
-            GUILayout.Label("A/D - Rotar");
+            GUILayout.Label("WASD/Flechas - Mover");
+            GUILayout.Label("Se rota automáticamente");
             GUILayout.EndArea();
         }
     }

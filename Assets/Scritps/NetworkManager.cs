@@ -3,30 +3,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 
-public class NetworkManager : MonoBehaviourPunCallbacks
+public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingCallbacks
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    public static NetworkManager Instance;
-
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-=======
-=======
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
-=======
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
     [Header("Configuración")]
     public GameObject jugadorPrefab;
     public Transform puntoSpawn;
@@ -42,23 +20,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         // Conectar a Photon
         ConectarAPhoton();
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
-=======
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
-=======
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
     }
 
-    public void LeaveRoom()
+    void OnDestroy()
     {
-<<<<<<< HEAD
-        if (PhotonNetwork.InRoom)
-        {
-            PhotonNetwork.LeaveRoom();
-            Debug.Log("Leaving room...");
-=======
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
@@ -142,32 +107,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             GUILayout.Label("Sala: " + PhotonNetwork.CurrentRoom.Name);
             GUILayout.Label("Jugadores: " + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers);
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
-=======
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
-=======
->>>>>>> parent of 2d2f8a7 (Nickname/TMP)
         }
-    }
 
-    public void Disconnect()
-    {
-        if (PhotonNetwork.IsConnected)
-        {
-            PhotonNetwork.Disconnect();
-            Debug.Log("Disconnecting from Photon...");
-        }
-    }
-
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        Debug.Log($"Player joined: {newPlayer.NickName}");
-    }
-
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        Debug.Log($"Player left: {otherPlayer.NickName}");
+        GUILayout.EndArea();
     }
 }
