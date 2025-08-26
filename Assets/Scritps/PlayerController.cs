@@ -3,13 +3,13 @@ using Photon.Pun;
 
 public class PlayerController : MonoBehaviour, IPunObservable
 {
-    [Header("Movement")]
-    public float speed = 5f;
-    public float rotationSpeed = 100f;
+    [Header("Movimiento")]
+    public float velocidad = 5f;
+    public float velocidadRotacion = 100f;
 
-    [Header("Visual Configuration")]
-    public Material localPlayerMaterial;
-    public Material remotePlayerMaterial;
+    [Header("Configuración Visual")]
+    public Material materialJugadorLocal;
+    public Material materialJugadorRemoto;
 
     private PhotonView pv;
     private Rigidbody rb;
@@ -21,105 +21,109 @@ public class PlayerController : MonoBehaviour, IPunObservable
         rb = GetComponent<Rigidbody>();
         playerRenderer = GetComponent<Renderer>();
 
-        // Configure material based on whether it's our player or not
-        ConfigurePlayer();
+        // Configurar el material según si es nuestro jugador o no
+        ConfigurarJugador();
 
+<<<<<<< HEAD
         // If it's not our player, disable some components for optimization
+=======
+        // Si no es nuestro jugador, desactivar algunos componentes para optimizar
+>>>>>>> parent of 2d2f8a7 (Nickname/TMP)
         if (!pv.IsMine)
         {
-            // Disable camera if it has one
+            // Desactivar la cámara si tiene una
             Camera cam = GetComponentInChildren<Camera>();
             if (cam != null)
                 cam.enabled = false;
 
-            // Disable AudioListener if it has one
+            // Desactivar el AudioListener si tiene uno
             AudioListener listener = GetComponentInChildren<AudioListener>();
             if (listener != null)
                 listener.enabled = false;
         }
     }
 
-    void ConfigurePlayer()
+    void ConfigurarJugador()
     {
         if (pv.IsMine)
         {
-            // It's our player
-            if (localPlayerMaterial != null)
-                playerRenderer.material = localPlayerMaterial;
+            // Es nuestro jugador
+            if (materialJugadorLocal != null)
+                playerRenderer.material = materialJugadorLocal;
 
-            // Change name to identify it
-            gameObject.name = "MY_PLAYER_" + PhotonNetwork.LocalPlayer.NickName;
+            // Cambiar el nombre para identificarlo
+            gameObject.name = "MI_JUGADOR_" + PhotonNetwork.LocalPlayer.NickName;
         }
         else
         {
-            // It's a remote player
-            if (remotePlayerMaterial != null)
-                playerRenderer.material = remotePlayerMaterial;
+            // Es un jugador remoto
+            if (materialJugadorRemoto != null)
+                playerRenderer.material = materialJugadorRemoto;
 
-            // Change name
-            gameObject.name = "REMOTE_PLAYER_" + pv.Owner.NickName;
+            // Cambiar el nombre
+            gameObject.name = "JUGADOR_REMOTO_" + pv.Owner.NickName;
         }
     }
 
     void Update()
     {
-        // Only process input if it's our player
+        // Solo procesar input si es nuestro jugador
         if (!pv.IsMine)
             return;
 
-        ProcessMovement();
+        ProcesarMovimiento();
     }
 
-    void ProcessMovement()
+    void ProcesarMovimiento()
     {
-        // Get keyboard input
-        float horizontal = Input.GetAxis("Horizontal"); // A/D or left/right arrows
-        float vertical = Input.GetAxis("Vertical");     // W/S or up/down arrows
+        // Obtener input del teclado
+        float horizontal = Input.GetAxis("Horizontal"); // A/D o flechas izquierda/derecha
+        float vertical = Input.GetAxis("Vertical");     // W/S o flechas arriba/abajo
 
-        // Free movement in all directions (like a top-down game)
-        Vector3 movement = new Vector3(horizontal, 0, vertical) * speed * Time.deltaTime;
-        transform.position += movement;
+        // Movimiento libre en todas las direcciones (como un juego de vista superior)
+        Vector3 movimiento = new Vector3(horizontal, 0, vertical) * velocidad * Time.deltaTime;
+        transform.position += movimiento;
 
-        // Optional: Rotate towards movement direction
-        if (movement.magnitude > 0.1f)
+        // Opcional: Rotar hacia la dirección de movimiento
+        if (movimiento.magnitude > 0.1f)
         {
-            Quaternion newRotation = Quaternion.LookRotation(movement);
-            transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.deltaTime * rotationSpeed);
+            Quaternion nuevaRotacion = Quaternion.LookRotation(movimiento);
+            transform.rotation = Quaternion.Slerp(transform.rotation, nuevaRotacion, Time.deltaTime * velocidadRotacion);
         }
     }
 
     void OnGUI()
     {
-        // Show controls only for our player
+        // Mostrar controles solo para nuestro jugador
         if (pv.IsMine)
         {
             GUILayout.BeginArea(new Rect(Screen.width - 200, 10, 180, 100));
-            GUILayout.Label("Controls:");
-            GUILayout.Label("WASD/Arrows - Move");
-            GUILayout.Label("Auto rotation");
+            GUILayout.Label("Controles:");
+            GUILayout.Label("W/S - Adelante/Atrás");
+            GUILayout.Label("A/D - Rotar");
             GUILayout.EndArea();
         }
     }
 
-    #region IPunObservable - To sync position and rotation
+    #region IPunObservable - Para sincronizar posición y rotación
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            // We send our position and rotation
+            // Enviamos nuestra posición y rotación
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
         }
         else
         {
-            // We receive position and rotation from other players
-            Vector3 position = (Vector3)stream.ReceiveNext();
-            Quaternion rotation = (Quaternion)stream.ReceiveNext();
+            // Recibimos la posición y rotación de otros jugadores
+            Vector3 posicion = (Vector3)stream.ReceiveNext();
+            Quaternion rotacion = (Quaternion)stream.ReceiveNext();
 
-            // Smooth interpolation for fluid movement
-            transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * 10);
-            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * 10);
+            // Interpolación suave para movimiento fluido
+            transform.position = Vector3.Lerp(transform.position, posicion, Time.deltaTime * 10);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rotacion, Time.deltaTime * 10);
         }
     }
 
