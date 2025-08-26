@@ -26,7 +26,11 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         // If it's not our player, disable some components for optimization
+=======
+        // Si no es nuestro jugador, desactivar algunos componentes para optimizar
+>>>>>>> parent of 2d2f8a7 (Nickname/TMP)
 =======
         // Si no es nuestro jugador, desactivar algunos componentes para optimizar
 >>>>>>> parent of 2d2f8a7 (Nickname/TMP)
