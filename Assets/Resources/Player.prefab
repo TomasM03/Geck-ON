@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 786630703152319442}
   - component: {fileID: 483092801330188825}
   - component: {fileID: 4576514272125142658}
+  - component: {fileID: 4990992355793141230}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -156,3 +157,20 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &4990992355793141230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784921582958196558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9afcce2a37a0cf14bb7d64ffbbc2b74c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombrePrefab: {fileID: 0}
+  offsetPosicion: {x: 0, y: 2, z: 0}
+  mirarCamara: 1
+  colorJugadorLocal: {r: 0, g: 1, b: 0, a: 1}
+  colorJugadorRemoto: {r: 1, g: 1, b: 1, a: 1}

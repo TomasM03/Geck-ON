@@ -14,12 +14,29 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
 
     void Start()
     {
-        // Configurar Photon
+        ConfigurarNickname();
+
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.AddCallbackTarget(this);
 
-        // Conectar a Photon
         ConectarAPhoton();
+    }
+
+    void ConfigurarNickname()
+    {
+        if (GameManager.Instance != null)
+        {
+            string nickname = GameManager.Instance.GetNickname();
+            PhotonNetwork.NickName = nickname;
+
+            if (mostrarLogs)
+                Debug.Log("Nickname configurado para Photon: " + PhotonNetwork.NickName);
+        }
+        else
+        {
+            PhotonNetwork.NickName = "Jugador_" + Random.Range(1000, 9999);
+            Debug.LogWarning("GameManager no encontrado, usando nickname por defecto: " + PhotonNetwork.NickName);
+        }
     }
 
     void OnDestroy()
@@ -30,8 +47,6 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
     void ConectarAPhoton()
     {
         if (mostrarLogs) Debug.Log("Conectando a Photon...");
-
-        // Configurar la región (opcional, usa la más cercana automáticamente)
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -40,8 +55,6 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
     public void OnConnectedToMaster()
     {
         if (mostrarLogs) Debug.Log("Conectado al servidor maestro de Photon");
-
-        // Unirse o crear una sala automáticamente
         PhotonNetwork.JoinOrCreateRoom("SalaJuego", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
     }
 
@@ -49,8 +62,7 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
     {
         if (mostrarLogs) Debug.Log("Unido a la sala: " + PhotonNetwork.CurrentRoom.Name);
         if (mostrarLogs) Debug.Log("Jugadores en la sala: " + PhotonNetwork.CurrentRoom.PlayerCount);
-
-        // Spawnear el jugador cuando nos unimos a la sala
+        
         SpawnearJugador();
     }
 
@@ -69,14 +81,19 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
         if (mostrarLogs) Debug.LogWarning("Desconectado de Photon: " + cause);
     }
 
-    // Métodos requeridos por las interfaces (pero no los usamos)
     public void OnConnected() { }
     public void OnRegionListReceived(RegionHandler regionHandler) { }
     public void OnCustomAuthenticationResponse(Dictionary<string, object> data) { }
     public void OnCustomAuthenticationFailed(string debugMessage) { }
     public void OnCreatedRoom() { }
-    public void OnCreateRoomFailed(short returnCode, string message) { }
-    public void OnJoinRoomFailed(short returnCode, string message) { }
+    public void OnCreateRoomFailed(short returnCode, string message)
+    {
+        if (mostrarLogs) Debug.LogError("Error creando sala: " + message);
+    }
+    public void OnJoinRoomFailed(short returnCode, string message)
+    {
+        if (mostrarLogs) Debug.LogError("Error uniéndose a sala: " + message);
+    }
     public void OnJoinRandomFailed(short returnCode, string message) { }
     public void OnLeftRoom() { }
     public void OnFriendListUpdate(List<FriendInfo> friendList) { }
@@ -87,28 +104,36 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
     {
         Vector3 posicionSpawn = puntoSpawn != null ? puntoSpawn.position : Vector3.zero;
 
-        // Agregar algo de variación en la posición para evitar que spawnen en el mismo lugar
         posicionSpawn += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
 
-        // Instanciar el jugador a través de la red
         GameObject miJugador = PhotonNetwork.Instantiate(jugadorPrefab.name, posicionSpawn, Quaternion.identity);
 
-        if (mostrarLogs) Debug.Log("Jugador spawneado: " + miJugador.name);
+        if (mostrarLogs) Debug.Log("Jugador spawneado: " + miJugador.name + " con nickname: " + PhotonNetwork.NickName);
     }
 
     void OnGUI()
     {
-        // UI simple para mostrar el estado de la conexión
         GUILayout.BeginArea(new Rect(10, 10, 300, 200));
-
         GUILayout.Label("Estado de Photon: " + PhotonNetwork.NetworkClientState);
+        GUILayout.Label("Mi Nickname: " + PhotonNetwork.NickName);
 
         if (PhotonNetwork.InRoom)
         {
             GUILayout.Label("Sala: " + PhotonNetwork.CurrentRoom.Name);
             GUILayout.Label("Jugadores: " + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers);
-        }
 
+            GUILayout.Label("Jugadores conectados:");
+            foreach (Player jugador in PhotonNetwork.PlayerList)
+            {
+                GUILayout.Label("- " + jugador.NickName);
+            }
+        }
         GUILayout.EndArea();
+    }
+
+    public void VolverAlMenu()
+    {
+        PhotonNetwork.LeaveRoom();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 }
