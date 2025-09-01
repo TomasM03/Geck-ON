@@ -1001,8 +1001,8 @@ MonoBehaviour:
   nicknameInput: {fileID: 959982622}
   playButton: {fileID: 1749850781}
   quitButton: {fileID: 170597522}
-  escenaJuego: Prueba1
-  mostrarLogs: 1
+  gameScene: Prueba1
+  Logs: 1
 --- !u!114 &834170940
 MonoBehaviour:
   m_ObjectHideFlags: 0

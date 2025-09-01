@@ -130,10 +130,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e519f4ef4c1f53409a1df84ac662b54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocidad: 5
-  velocidadRotacion: 100
-  materialJugadorLocal: {fileID: 0}
-  materialJugadorRemoto: {fileID: 0}
+  speed: 5
+  rotationSpeed: 100
+  matLocalPlayer: {fileID: 0}
+  matOtherPlayer: {fileID: 0}
 --- !u!114 &4576514272125142658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,8 +169,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9afcce2a37a0cf14bb7d64ffbbc2b74c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nombrePrefab: {fileID: 0}
+  prefabName: {fileID: 0}
   offsetPosicion: {x: 0, y: 2, z: 0}
-  mirarCamara: 1
-  colorJugadorLocal: {r: 0, g: 1, b: 0, a: 1}
-  colorJugadorRemoto: {r: 1, g: 1, b: 1, a: 1}
+  cameraView: 1
+  localPlayerColor: {r: 0, g: 1, b: 0, a: 1}
+  otherPlayerColor: {r: 1, g: 1, b: 1, a: 1}
