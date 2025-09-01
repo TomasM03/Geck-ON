@@ -5,37 +5,35 @@ using System.Collections.Generic;
 
 public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingCallbacks
 {
-    [Header("Configuración")]
-    public GameObject jugadorPrefab;
-    public Transform puntoSpawn;
+    public GameObject playerPrefab;
+    public Transform spawnPoint;
 
-    [Header("Debug")]
-    public bool mostrarLogs = true;
+    public bool showLogs = true;
 
     void Start()
     {
-        ConfigurarNickname();
+        NicknameConfig();
 
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.AddCallbackTarget(this);
 
-        ConectarAPhoton();
+        ConectPhoton();
     }
 
-    void ConfigurarNickname()
+    void NicknameConfig()
     {
         if (GameManager.Instance != null)
         {
             string nickname = GameManager.Instance.GetNickname();
             PhotonNetwork.NickName = nickname;
 
-            if (mostrarLogs)
-                Debug.Log("Nickname configurado para Photon: " + PhotonNetwork.NickName);
+            if (showLogs)
+                Debug.Log("Nickname" + PhotonNetwork.NickName);
         }
         else
         {
-            PhotonNetwork.NickName = "Jugador_" + Random.Range(1000, 9999);
-            Debug.LogWarning("GameManager no encontrado, usando nickname por defecto: " + PhotonNetwork.NickName);
+            PhotonNetwork.NickName = "Player_" + Random.Range(1000, 9999);
+            Debug.LogWarning("GameManager no" + PhotonNetwork.NickName);
         }
     }
 
@@ -44,41 +42,39 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
-    void ConectarAPhoton()
+    void ConectPhoton()
     {
-        if (mostrarLogs) Debug.Log("Conectando a Photon...");
+        if (showLogs) Debug.Log("Connecting...");
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    #region Callbacks de Photon
-
     public void OnConnectedToMaster()
     {
-        if (mostrarLogs) Debug.Log("Conectado al servidor maestro de Photon");
+        if (showLogs) Debug.Log("Conectado al servidor maestro de Photon");
         PhotonNetwork.JoinOrCreateRoom("SalaJuego", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
     }
 
     public void OnJoinedRoom()
     {
-        if (mostrarLogs) Debug.Log("Unido a la sala: " + PhotonNetwork.CurrentRoom.Name);
-        if (mostrarLogs) Debug.Log("Jugadores en la sala: " + PhotonNetwork.CurrentRoom.PlayerCount);
-        
-        SpawnearJugador();
+        if (showLogs) Debug.Log("Unido a la sala: " + PhotonNetwork.CurrentRoom.Name);
+        if (showLogs) Debug.Log("Jugadores en la sala: " + PhotonNetwork.CurrentRoom.PlayerCount);
+
+        SpawnPlayer();
     }
 
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
-        if (mostrarLogs) Debug.Log("Nuevo jugador entró: " + newPlayer.NickName);
+        if (showLogs) Debug.Log("Nuevo jugador entró: " + newPlayer.NickName);
     }
 
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
-        if (mostrarLogs) Debug.Log("Jugador salió: " + otherPlayer.NickName);
+        if (showLogs) Debug.Log("Jugador salió: " + otherPlayer.NickName);
     }
 
     public void OnDisconnected(DisconnectCause cause)
     {
-        if (mostrarLogs) Debug.LogWarning("Desconectado de Photon: " + cause);
+        if (showLogs) Debug.LogWarning("Desconectado de Photon: " + cause);
     }
 
     public void OnConnected() { }
@@ -88,52 +84,25 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
     public void OnCreatedRoom() { }
     public void OnCreateRoomFailed(short returnCode, string message)
     {
-        if (mostrarLogs) Debug.LogError("Error creando sala: " + message);
+        if (showLogs) Debug.LogError("Error creando sala: " + message);
     }
     public void OnJoinRoomFailed(short returnCode, string message)
     {
-        if (mostrarLogs) Debug.LogError("Error uniéndose a sala: " + message);
+        if (showLogs) Debug.LogError("Error uniéndose a sala: " + message);
     }
     public void OnJoinRandomFailed(short returnCode, string message) { }
     public void OnLeftRoom() { }
     public void OnFriendListUpdate(List<FriendInfo> friendList) { }
 
-    #endregion
 
-    void SpawnearJugador()
+    void SpawnPlayer()
     {
-        Vector3 posicionSpawn = puntoSpawn != null ? puntoSpawn.position : Vector3.zero;
+        Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : Vector3.zero;
 
-        posicionSpawn += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+        spawnPosition += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
 
-        GameObject miJugador = PhotonNetwork.Instantiate(jugadorPrefab.name, posicionSpawn, Quaternion.identity);
+        GameObject player = PhotonNetwork.Instantiate(playerPrefab.name, spawnPosition, Quaternion.identity);
 
-        if (mostrarLogs) Debug.Log("Jugador spawneado: " + miJugador.name + " con nickname: " + PhotonNetwork.NickName);
-    }
-
-    void OnGUI()
-    {
-        GUILayout.BeginArea(new Rect(10, 10, 300, 200));
-        GUILayout.Label("Estado de Photon: " + PhotonNetwork.NetworkClientState);
-        GUILayout.Label("Mi Nickname: " + PhotonNetwork.NickName);
-
-        if (PhotonNetwork.InRoom)
-        {
-            GUILayout.Label("Sala: " + PhotonNetwork.CurrentRoom.Name);
-            GUILayout.Label("Jugadores: " + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers);
-
-            GUILayout.Label("Jugadores conectados:");
-            foreach (Player jugador in PhotonNetwork.PlayerList)
-            {
-                GUILayout.Label("- " + jugador.NickName);
-            }
-        }
-        GUILayout.EndArea();
-    }
-
-    public void VolverAlMenu()
-    {
-        PhotonNetwork.LeaveRoom();
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        if (showLogs) Debug.Log("Player: " + player.name + PhotonNetwork.NickName);
     }
 }

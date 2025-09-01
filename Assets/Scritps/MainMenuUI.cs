@@ -9,51 +9,51 @@ public class MainMenuUI : MonoBehaviour
     public Button playButton;
     public Button quitButton;
 
-    public string escenaJuego = "GameScene";
+    public string gameScene = "GameScene";
 
-    public bool mostrarLogs = true;
+    public bool Logs = true;
 
     void Start()
     {
-        ConfigurarUI();
-        CargarDatosGuardados();
+        SetUI();
+        Upload();
     }
 
-    void ConfigurarUI()
+    void SetUI()
     {
         if (playButton != null)
-            playButton.onClick.AddListener(IniciarJuego);
+            playButton.onClick.AddListener(Play);
 
         if (quitButton != null)
             quitButton.onClick.AddListener(SalirJuego);
 
         if (nicknameInput != null)
         {
-            nicknameInput.onEndEdit.AddListener(ActualizarNickname);
+            nicknameInput.onEndEdit.AddListener(NicknameRefresh);
             nicknameInput.characterLimit = 20;
         }
     }
 
-    void CargarDatosGuardados()
+    void Upload()
     {
         if (GameManager.Instance != null && nicknameInput != null)
         {
             string nicknameGuardado = GameManager.Instance.GetNickname();
             if (!string.IsNullOrEmpty(nicknameGuardado) &&
-                !nicknameGuardado.StartsWith("Jugador_"))
+                !nicknameGuardado.StartsWith("Player_"))
             {
                 nicknameInput.text = nicknameGuardado;
             }
         }
     }
 
-    public void ActualizarNickname(string nuevoNickname)
+    public void NicknameRefresh(string nuevoNickname)
     {
         nuevoNickname = nuevoNickname.Trim();
 
         if (string.IsNullOrEmpty(nuevoNickname))
         {
-            if (mostrarLogs) Debug.Log("Nickname vacío, se generará uno automático");
+            if (Logs) Debug.Log("Nickname vacío");
             return;
         }
 
@@ -64,7 +64,7 @@ public class MainMenuUI : MonoBehaviour
             GameManager.Instance.SetNickname(nuevoNickname);
         }
 
-        if (mostrarLogs) Debug.Log("Nickname actualizado: " + nuevoNickname);
+        if (Logs) Debug.Log("Nickname actualizado: " + nuevoNickname);
     }
 
     string FiltrarNickname(string nickname)
@@ -83,62 +83,29 @@ public class MainMenuUI : MonoBehaviour
         return nicknameFiltrado;
     }
 
-    public void IniciarJuego()
+    public void Play()
     {
         if (nicknameInput != null)
         {
-            ActualizarNickname(nicknameInput.text);
+            NicknameRefresh(nicknameInput.text);
         }
 
         if (GameManager.Instance == null)
         {
-            Debug.LogError("GameManager no encontrado!");
+            Debug.LogError("GameManager no");
             return;
         }
 
-        if (mostrarLogs)
+        if (Logs)
         {
-            Debug.Log("Iniciando juego con nickname: " + GameManager.Instance.GetNickname());
+            Debug.Log("Nickname: " + GameManager.Instance.GetNickname());
         }
 
-        SceneManager.LoadScene(escenaJuego);
+        SceneManager.LoadScene(gameScene);
     }
 
     public void SalirJuego()
     {
-        if (mostrarLogs) Debug.Log("Saliendo del juego...");
-
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-    }
-
-    public void BorrarDatosGuardados()
-    {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.BorrarDatos();
-
-            if (nicknameInput != null)
-                nicknameInput.text = "";
-
-            if (mostrarLogs) Debug.Log("Datos borrados");
-        }
-    }
-
-    void OnGUI()
-    {
-        // Debug UI (opcional)
-        if (mostrarLogs && GameManager.Instance != null)
-        {
-            GUILayout.BeginArea(new Rect(10, 10, 300, 100));
-            GUILayout.Label("DEBUG - GameManager");
-            GUILayout.Label("Nickname: " + GameManager.Instance.GetNickname());
-            GUILayout.Label("Arma: " + GameManager.Instance.GetArmaSeleccionada());
-            GUILayout.Label("Skin: " + GameManager.Instance.GetSkinSeleccionado());
-            GUILayout.EndArea();
-        }
+        Application.Quit();
     }
 }

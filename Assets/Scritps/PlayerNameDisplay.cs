@@ -4,115 +4,75 @@ using TMPro;
 
 public class PlayerNameDisplay : MonoBehaviour
 {
-    [Header("Configuración del Nombre")]
-    public GameObject nombrePrefab; // Prefab con TextMeshPro
+    public GameObject prefabName;
     public Vector3 offsetPosicion = new Vector3(0, 2f, 0);
-    public bool mirarCamara = true;
+    public bool cameraView = true;
 
-    [Header("Colores")]
-    public Color colorJugadorLocal = Color.green;
-    public Color colorJugadorRemoto = Color.white;
+    public Color localPlayerColor = Color.green;
+    public Color otherPlayerColor = Color.white;
 
     private PhotonView pv;
-    private GameObject nombreUI;
-    private TextMeshPro nombreTexto;
-    private Camera camaraPrincipal;
+    private GameObject nameUI;
+    private TextMeshPro nameText;
+    private Camera mainCam;
 
     void Start()
     {
         pv = GetComponent<PhotonView>();
-        camaraPrincipal = Camera.main;
+        mainCam = Camera.main;
 
-        CrearNombreUI();
+        CreateName();
     }
 
-    void CrearNombreUI()
+    void CreateName()
     {
-        if (nombrePrefab == null)
+        if (prefabName == null)
         {
-            CrearNombreBasico();
+            BasicName();
         }
         else
         {
-            nombreUI = Instantiate(nombrePrefab, transform);
-            nombreTexto = nombreUI.GetComponent<TextMeshPro>();
+            nameUI = Instantiate(prefabName, transform);
+            nameText = nameUI.GetComponent<TextMeshPro>();
         }
 
-        if (nombreTexto != null)
+        if (nameText != null)
         {
-            ConfigurarNombre();
+            NameSet();
         }
     }
 
-    void CrearNombreBasico()
+    void BasicName()
     {
-        nombreUI = new GameObject("NombreJugador");
-        nombreUI.transform.SetParent(transform);
-        nombreUI.transform.localPosition = offsetPosicion;
-
-        nombreTexto = nombreUI.AddComponent<TextMeshPro>();
-        nombreTexto.text = "Nombre";
-        nombreTexto.fontSize = 3;
-        nombreTexto.alignment = TextAlignmentOptions.Center;
-        nombreTexto.sortingOrder = 10;
+        nameUI = new GameObject("PlayerName");
+        nameUI.transform.SetParent(transform);
+        nameUI.transform.localPosition = offsetPosicion;
+            
+        nameText = nameUI.AddComponent<TextMeshPro>();
+        nameText.text = "Name";
+        nameText.fontSize = 3;
+        nameText.alignment = TextAlignmentOptions.Center;
+        nameText.sortingOrder = 10;
     }
 
-    void ConfigurarNombre()
+    void NameSet()
     {
-        if (pv != null && nombreTexto != null)
+        if (pv != null && nameText != null)
         {
-            nombreTexto.text = pv.Owner.NickName;
+            nameText.text = pv.Owner.NickName;
 
             if (pv.IsMine)
             {
-                nombreTexto.color = colorJugadorLocal;
-                nombreTexto.text = nombreTexto.text + " (TÚ)";
-            }
+                nameText.color = localPlayerColor;
+                nameText.text = nameText.text + " (YOU)";
+            }   
             else
             {
-                nombreTexto.color = colorJugadorRemoto;
+                nameText.color = otherPlayerColor;
             }
 
-            nombreUI.transform.localPosition = offsetPosicion;
+            nameUI.transform.localPosition = offsetPosicion;
         }
     }
 
-    void LateUpdate()
-    {
-        if (mirarCamara && nombreUI != null && camaraPrincipal != null)
-        {
-            nombreUI.transform.LookAt(camaraPrincipal.transform);
-
-            nombreUI.transform.Rotate(0, 180, 0);
-        }
-    }
-
-    void OnDestroy()
-    {
-        if (nombreUI != null)
-        {
-            Destroy(nombreUI);
-        }
-    }
-
-    public void ActualizarNombre(string nuevoNombre)
-    {
-        if (nombreTexto != null)
-        {
-            nombreTexto.text = nuevoNombre;
-
-            if (pv.IsMine)
-            {
-                nombreTexto.text += " (TÚ)";
-            }
-        }
-    }
-
-    public void MostrarNombre(bool mostrar)
-    {
-        if (nombreUI != null)
-        {
-            nombreUI.SetActive(mostrar);
-        }
-    }
 }
