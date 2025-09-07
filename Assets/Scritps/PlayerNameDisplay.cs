@@ -20,7 +20,6 @@ public class PlayerNameDisplay : MonoBehaviour
     {
         pv = GetComponent<PhotonView>();
         mainCam = Camera.main;
-
         CreateName();
     }
 

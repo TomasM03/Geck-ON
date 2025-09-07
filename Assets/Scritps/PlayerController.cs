@@ -3,23 +3,42 @@ using Photon.Pun;
 
 public class PlayerController : MonoBehaviour, IPunObservable
 {
-    public float speed = 5f;
-    public float rotationSpeed = 100f;
+    [Header("Movement Settings")]
+    public float walkSpeed = 5f;
+    public float runSpeed = 8f;
+    public float jumpForce = 5f;
 
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask = 1;
+
+    [Header("Materials")]
     public Material matLocalPlayer;
     public Material matOtherPlayer;
 
     private PhotonView pv;
     private Rigidbody rb;
     private Renderer playerRenderer;
+    private PlayerCamera playerCam;
+
+    private bool isGrounded;
+    private bool isRunning;
+
+    private Vector3 networkPosition;
+    private Quaternion networkRotation;
 
     void Start()
     {
         pv = GetComponent<PhotonView>();
         rb = GetComponent<Rigidbody>();
         playerRenderer = GetComponent<Renderer>();
+        playerCam = GetComponentInChildren<PlayerCamera>();
 
         PlayerSets();
+
+        networkPosition = transform.position;
+        networkRotation = transform.rotation;
 
         if (!pv.IsMine)
         {
@@ -33,40 +52,74 @@ public class PlayerController : MonoBehaviour, IPunObservable
     {
         if (pv.IsMine)
         {
-            if (matLocalPlayer != null)
+            if (matLocalPlayer != null && playerRenderer != null)
                 playerRenderer.material = matLocalPlayer;
-
             gameObject.name = "Player_" + PhotonNetwork.LocalPlayer.NickName;
         }
         else
         {
-            if (matOtherPlayer != null)
+            if (matOtherPlayer != null && playerRenderer != null)
                 playerRenderer.material = matOtherPlayer;
-
             gameObject.name = "Player_" + pv.Owner.NickName;
         }
     }
 
     void Update()
     {
-        if (!pv.IsMine)
-            return;
-
-        Movement();
+        if (pv.IsMine)
+        {
+            GroundCheck();
+            HandleMovement();
+            HandleJump();
+        }
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * 10f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, networkRotation, Time.deltaTime * 10f);
+        }
     }
 
-    void Movement()
+    void GroundCheck()
+    {
+        if (groundCheck != null)
+        {
+            isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        }
+        else
+        {
+            isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
+        }
+    }
+
+    void HandleMovement()
     {
         float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical"); 
+        float vertical = Input.GetAxis("Vertical");
 
-        Vector3 movimiento = new Vector3(horizontal, 0, vertical) * speed * Time.deltaTime;
-        transform.position += movimiento;
+        isRunning = Input.GetKey(KeyCode.LeftShift);
+        float currentSpeed = isRunning ? runSpeed : walkSpeed;
 
-        if (movimiento.magnitude > 0.1f)
+        Vector3 direction = (transform.right * horizontal + transform.forward * vertical).normalized;
+
+        if (direction.magnitude >= 0.1f)
         {
-            Quaternion nuevaRotacion = Quaternion.LookRotation(movimiento);
-            transform.rotation = Quaternion.Slerp(transform.rotation, nuevaRotacion, Time.deltaTime * rotationSpeed);
+            Vector3 moveVector = direction * currentSpeed;
+
+            moveVector.y = rb.velocity.y;
+
+            rb.velocity = moveVector;
+        }
+        else
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        }
+    }
+
+    void HandleJump()
+    {
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
         }
     }
 
@@ -76,15 +129,54 @@ public class PlayerController : MonoBehaviour, IPunObservable
         {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
+            stream.SendNext(rb.velocity);
+            stream.SendNext(isRunning);
         }
         else
         {
-            Vector3 posicion = (Vector3)stream.ReceiveNext();
-            Quaternion rotacion = (Quaternion)stream.ReceiveNext();
+            networkPosition = (Vector3)stream.ReceiveNext();
+            networkRotation = (Quaternion)stream.ReceiveNext();
+            Vector3 networkVelocity = (Vector3)stream.ReceiveNext();
+            bool networkIsRunning = (bool)stream.ReceiveNext();
 
-            transform.position = Vector3.Lerp(transform.position, posicion, Time.deltaTime * 10);
-            transform.rotation = Quaternion.Lerp(transform.rotation, rotacion, Time.deltaTime * 10);
+            if (rb != null)
+            {
+                rb.velocity = Vector3.Lerp(rb.velocity, networkVelocity, Time.deltaTime * 10f);
+            }
+
+            isRunning = networkIsRunning;
         }
     }
 
+    public void RotatePlayer(float yRotation)
+    {
+        if (pv.IsMine)
+        {
+            transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
+        }
+    }
+
+    public float GetCurrentSpeed()
+    {
+        return isRunning ? runSpeed : walkSpeed;
+    }
+
+    public bool IsGrounded()
+    {
+        return isGrounded;
+    }
+
+    public bool IsRunning()
+    {
+        return isRunning;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = isGrounded ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
+        }
+    }
 }
