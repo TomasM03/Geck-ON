@@ -3,31 +3,26 @@ using Photon.Pun;
 
 public class PlayerCamera : MonoBehaviour
 {
-    [Header("Camera Settings")]
     public float mouseSensitivity = 2f;
     public bool invertY = false;
     public float cameraDistance = 5f;
     public float cameraHeight = 2f;
 
-    [Header("Camera Limits")]
     public float minVerticalAngle = -30f;
     public float maxVerticalAngle = 60f;
 
-    [Header("Camera Smoothing")]
     public float rotationSmoothing = 10f;
     public float positionSmoothing = 10f;
 
-    [Header("References")]
     public Transform playerBody;
-    public Camera thirdPersonCam;
+    public Camera mainCam;
 
     private PhotonView pv;
     private float horizontalRotation = 0f;
     private float verticalRotation = 0f;
     private bool canLook = true;
 
-    private Vector3 targetCameraPosition;
-    private Vector3 currentCameraVelocity;
+    private Vector3 cameraVelocity;
 
     void Start()
     {
@@ -39,8 +34,8 @@ public class PlayerCamera : MonoBehaviour
         }
         else
         {
-            if (thirdPersonCam != null)
-                thirdPersonCam.enabled = false;
+            if (mainCam != null)
+                mainCam.enabled = false;
         }
     }
 
@@ -49,18 +44,18 @@ public class PlayerCamera : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        if (thirdPersonCam != null)
+        if (mainCam != null)
         {
-            thirdPersonCam.enabled = true;
+            mainCam.enabled = true;
 
-            AudioListener audioListener = thirdPersonCam.GetComponent<AudioListener>();
+            AudioListener audioListener = mainCam.GetComponent<AudioListener>();
             if (audioListener != null)
             {
                 audioListener.enabled = true;
             }
             else
             {
-                thirdPersonCam.gameObject.AddComponent<AudioListener>();
+                mainCam.gameObject.AddComponent<AudioListener>();
             }
         }
 
@@ -119,7 +114,7 @@ public class PlayerCamera : MonoBehaviour
 
     void UpdateCameraPosition()
     {
-        if (thirdPersonCam == null || playerBody == null)
+        if (mainCam == null || playerBody == null)
             return;
 
         Vector3 direction = Quaternion.Euler(verticalRotation, horizontalRotation, 0f) * Vector3.back;
@@ -134,15 +129,15 @@ public class PlayerCamera : MonoBehaviour
             targetPosition = hit.point - rayDirection.normalized * 0.3f;
         }
 
-        thirdPersonCam.transform.position = Vector3.SmoothDamp(
-            thirdPersonCam.transform.position,
+        mainCam.transform.position = Vector3.SmoothDamp(
+            mainCam.transform.position,
             targetPosition,
-            ref currentCameraVelocity,
+            ref cameraVelocity,
             1f / positionSmoothing
         );
 
         Vector3 lookTarget = playerBody.position + Vector3.up * (cameraHeight * 0.8f);
-        thirdPersonCam.transform.LookAt(lookTarget);
+        mainCam.transform.LookAt(lookTarget);
     }
 
     void HandleInput()
@@ -211,7 +206,7 @@ public class PlayerCamera : MonoBehaviour
 
         foreach (AudioListener listener in allListeners)
         {
-            if (listener.gameObject != thirdPersonCam.gameObject)
+            if (listener.gameObject != mainCam.gameObject)
             {
                 listener.enabled = false;
             }
@@ -221,8 +216,8 @@ public class PlayerCamera : MonoBehaviour
     public void DisableCamera()
     {
         canLook = false;
-        if (thirdPersonCam != null)
-            thirdPersonCam.enabled = false;
+        if (mainCam != null)
+            mainCam.enabled = false;
     }
 
     public void EnableCamera()
@@ -230,8 +225,8 @@ public class PlayerCamera : MonoBehaviour
         if (pv != null && pv.IsMine)
         {
             canLook = true;
-            if (thirdPersonCam != null)
-                thirdPersonCam.enabled = true;
+            if (mainCam != null)
+                mainCam.enabled = true;
             LockCursor();
         }
     }

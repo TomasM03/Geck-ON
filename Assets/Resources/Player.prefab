@@ -119,7 +119,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 32
+  m_Constraints: 80
   m_CollisionDetection: 1
 --- !u!114 &483092801330188825
 MonoBehaviour:
@@ -204,7 +204,7 @@ MonoBehaviour:
   rotationSmoothing: 10
   positionSmoothing: 10
   playerBody: {fileID: 8302473185687800894}
-  thirdPersonCam: {fileID: 7532438583411234100}
+  mainCam: {fileID: 7532438583411234100}
 --- !u!1 &6465262437033077559
 GameObject:
   m_ObjectHideFlags: 0

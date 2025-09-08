@@ -3,17 +3,14 @@ using Photon.Pun;
 
 public class PlayerController : MonoBehaviour, IPunObservable
 {
-    [Header("Movement Settings")]
     public float walkSpeed = 5f;
     public float runSpeed = 8f;
     public float jumpForce = 5f;
 
-    [Header("Ground Check")]
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask = 1;
 
-    [Header("Materials")]
     public Material matLocalPlayer;
     public Material matOtherPlayer;
 
