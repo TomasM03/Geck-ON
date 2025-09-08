@@ -5,8 +5,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public string nickname = "";
-    public int armaSeleccionada = 0;
-    public int skinSeleccionado = 0;
+    public int weaponSelect = 0;
 
     public bool mostrarLogs = true;
 
@@ -16,7 +15,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            CargarDatosGuardados();
+            LoadInfo();
         }
         else
         {
@@ -24,25 +23,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     public void SetNickname(string nuevoNickname)
     {
         nickname = nuevoNickname;
-        GuardarDatos();
+        SaveInfos();
         if (mostrarLogs) Debug.Log("Nickname guardado: " + nickname);
     }
 
-    public void SetArma(int armaIndex)
+    public void SetWeapon(int armaIndex)
     {
-        armaSeleccionada = armaIndex;
-        GuardarDatos();
+        weaponSelect = armaIndex;
+        SaveInfos();
         if (mostrarLogs) Debug.Log("Arma seleccionada: " + armaIndex);
-    }
-
-    public void SetSkin(int skinIndex)
-    {
-        skinSeleccionado = skinIndex;
-        GuardarDatos();
-        if (mostrarLogs) Debug.Log("Skin seleccionado: " + skinIndex);
     }
 
     public string GetNickname()
@@ -50,44 +43,36 @@ public class GameManager : MonoBehaviour
         if (string.IsNullOrEmpty(nickname))
         {
             nickname = "Jugador_" + Random.Range(1000, 9999);
-            GuardarDatos();
+            SaveInfos();
         }
         return nickname;
     }
 
-    public int GetArmaSeleccionada()
+    public int GetWeapon()
     {
-        return armaSeleccionada;
+        return weaponSelect;
     }
 
-    public int GetSkinSeleccionado()
-    {
-        return skinSeleccionado;
-    }
-
-    void GuardarDatos()
+    void SaveInfos()
     {
         PlayerPrefs.SetString("PlayerNickname", nickname);
-        PlayerPrefs.SetInt("PlayerArma", armaSeleccionada);
-        PlayerPrefs.SetInt("PlayerSkin", skinSeleccionado);
+        PlayerPrefs.SetInt("PlayerArma", weaponSelect);
         PlayerPrefs.Save();
     }
 
-    void CargarDatosGuardados()
+    void LoadInfo()
     {
         nickname = PlayerPrefs.GetString("PlayerNickname", "");
-        armaSeleccionada = PlayerPrefs.GetInt("PlayerArma", 0);
-        skinSeleccionado = PlayerPrefs.GetInt("PlayerSkin", 0);
+        weaponSelect = PlayerPrefs.GetInt("PlayerArma", 0);
 
         if (mostrarLogs)
         {
             Debug.Log("Datos cargados - Nickname: " + nickname +
-                     ", Arma: " + armaSeleccionada +
-                     ", Skin: " + skinSeleccionado);
+                     ", Arma: " + weaponSelect);
         }
     }
 
-    public void BorrarDatos()
+    public void DeletInfo()
     {
         PlayerPrefs.DeleteKey("PlayerNickname");
         PlayerPrefs.DeleteKey("PlayerArma");
@@ -95,8 +80,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.Save();
 
         nickname = "";
-        armaSeleccionada = 0;
-        skinSeleccionado = 0;
+        weaponSelect = 0;
 
         if (mostrarLogs) Debug.Log("Datos del jugador borrados");
     }
