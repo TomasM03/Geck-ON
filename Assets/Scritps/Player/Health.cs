@@ -37,21 +37,10 @@ public class Health : MonoBehaviourPun
             currentHealth -= damage;
 
             photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
+
             if (currentHealth <= 0)
             {
                 photonView.RPC("SyncDeath", RpcTarget.All);
-            }
-
-
-            healthTxt.text = currentHealth.ToString() + "%";
-
-            if (currentHealth < 60)
-            {
-                healthTxt.color = Color.yellow;
-            }
-            else if (currentHealth < 30)
-            {
-                healthTxt.color = Color.red;
             }
         }
         else //Si es objeto
@@ -71,6 +60,18 @@ public class Health : MonoBehaviourPun
         // Sincronizar HP
         photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
         Debug.Log(currentHealth);
+
+        healthTxt.text = currentHealth.ToString() + "%";
+
+        if (currentHealth < 60)
+        {
+            healthTxt.color = Color.yellow;
+        }
+        else if (currentHealth < 30)
+        {
+            healthTxt.color = Color.red;
+        }
+
         if (currentHealth <= 0)
         {
             photonView.RPC("SyncDeath", RpcTarget.All);
