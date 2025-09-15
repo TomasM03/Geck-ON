@@ -10,11 +10,13 @@ public class RespawnCanvas : MonoBehaviour
     public Button respawnButton;
     public Button mainMenuButton;
 
+    public GameObject deathPanel;
+
     void Start()
     {
         respawnButton.onClick.AddListener(Respawn);
         mainMenuButton.onClick.AddListener(MainMenu);
-        gameObject.SetActive(false);
+        deathPanel.SetActive(false);
     }
 
     //Respawn Button

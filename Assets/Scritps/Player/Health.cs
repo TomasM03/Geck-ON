@@ -72,7 +72,7 @@ public class Health : MonoBehaviourPun
         Die();
     }
 
-    //DiedVoid - MODIFICADO
+    //DiedVoid
     void Die()
     {
         if (isPlayer)
@@ -94,12 +94,10 @@ public class Health : MonoBehaviourPun
                     playerCam.UnlockCursor();
                 }
 
-                // Mostrar canvas de muerte
-                GameObject deathCanvas = GameObject.Find("DeathCanvas");
-                if (deathCanvas != null)
-                {
-                    deathCanvas.SetActive(true);
-                }
+                RespawnCanvas respawnCanvas = FindObjectOfType<RespawnCanvas>();
+                Debug.Log(respawnCanvas);
+                respawnCanvas.deathPanel.SetActive(true);
+
             }
             else
             {

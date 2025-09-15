@@ -661,6 +661,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeathCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4571078440192437315, guid: 9d5b0e2132e2e6e4293f943c8658e7a4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4571078440192437375, guid: 9d5b0e2132e2e6e4293f943c8658e7a4, type: 3}
       propertyPath: m_Pivot.x
       value: 0
