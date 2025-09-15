@@ -21,6 +21,8 @@ public class Health : MonoBehaviourPun
     void Start()
     {
         currentHealth = maxHealth;
+        healthTxt.text = "Health : " + currentHealth.ToString() + "%";
+        healthTxt.color = Color.green;
     }
 
     //DamageSyst
@@ -61,13 +63,13 @@ public class Health : MonoBehaviourPun
         photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
         Debug.Log(currentHealth);
 
-        healthTxt.text = currentHealth.ToString() + "%";
+        healthTxt.text = "Health : " + currentHealth.ToString() + "%";
 
-        if (currentHealth < 60)
+        if (currentHealth <= 65)
         {
             healthTxt.color = Color.yellow;
         }
-        else if (currentHealth < 30)
+        else if (currentHealth <= 30)
         {
             healthTxt.color = Color.red;
         }
