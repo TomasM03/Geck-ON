@@ -238,6 +238,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   isPlayer: 1
+  mainMenuScene: MainMenu
+  deathDelay: 2
 --- !u!1 &6465262437033077559
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,7 +315,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1198627384709716026}
   - component: {fileID: 7532438583411234100}
-  - component: {fileID: 3100588747284852763}
   m_Layer: 0
   m_Name: FPSCamera
   m_TagString: Untagged
@@ -379,14 +380,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &3100588747284852763
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7295498302286980202}
-  m_Enabled: 1
 --- !u!1 &7629883111473311387
 GameObject:
   m_ObjectHideFlags: 0

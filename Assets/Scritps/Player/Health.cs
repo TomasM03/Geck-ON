@@ -37,8 +37,19 @@ public class Health : MonoBehaviour
     {
         if (isPlayer)
         {
-            Debug.Log("Player died - Returning to main menu");
-            StartCoroutine(ReturnToMainMenu());
+
+            PhotonView pv = GetComponent<PhotonView>();
+            if (pv != null && pv.IsMine)
+            {
+                Debug.Log("MY player died - Returning to main menu");
+                StartCoroutine(ReturnToMainMenu());
+            }
+            else
+            {
+                Debug.Log("Other player died");
+
+                gameObject.SetActive(false);
+            }
         }
         else
         {
@@ -60,7 +71,7 @@ public class Health : MonoBehaviour
         {
             playerCam.DisableCamera();
         }
-
+l)
         yield return new WaitForSeconds(deathDelay);
 
         if (PhotonNetwork.IsConnected)
