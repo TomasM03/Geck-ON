@@ -21,8 +21,40 @@ public class Health : MonoBehaviourPun
     void Start()
     {
         currentHealth = maxHealth;
+
+        if (!photonView.IsMine)
+        {
+            Canvas localCanvas = GetComponentInChildren<Canvas>();
+            if (localCanvas != null)
+                localCanvas.enabled = false;
+        }
+
+        UpdateHealthUI();
+    }
+
+    //Actualizar UI
+    private void UpdateHealthUI()
+    {
         healthTxt.text = "Health : " + currentHealth.ToString() + "%";
-        healthTxt.color = Color.green;
+
+        if (currentHealth <= 65)
+        {
+            healthTxt.color = Color.yellow;
+        }
+        else 
+        {
+            healthTxt.color = Color.green; 
+        }
+
+        if (currentHealth <= 35)
+        {
+            healthTxt.color = Color.red;
+        }
+
+        if (currentHealth <= 0)
+        {
+            healthTxt.text = "Health : 0%";
+        }
     }
 
     //DamageSyst
@@ -37,6 +69,7 @@ public class Health : MonoBehaviourPun
             }
 
             currentHealth -= damage;
+
 
             photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
 
@@ -63,16 +96,7 @@ public class Health : MonoBehaviourPun
         photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
         Debug.Log(currentHealth);
 
-        healthTxt.text = "Health : " + currentHealth.ToString() + "%";
-
-        if (currentHealth <= 65)
-        {
-            healthTxt.color = Color.yellow;
-        }
-        else if (currentHealth <= 30)
-        {
-            healthTxt.color = Color.red;
-        }
+        UpdateHealthUI();
 
         if (currentHealth <= 0)
         {
@@ -161,6 +185,7 @@ public class Health : MonoBehaviourPun
         }
 
         photonView.RPC("SyncRespawn", RpcTarget.Others);
+        UpdateHealthUI();
     }
 
     [PunRPC]

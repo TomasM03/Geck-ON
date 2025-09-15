@@ -5,14 +5,13 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [Header("Weapon Settings")]
     public string weaponName = "Pistol";
     public float damage = 25f;
     public float range = 100f;
     public float fireRate = 0.5f;
     public int bulletsPerShot = 1;
     public float spread = 0f;
-    [Header("References")]
+
     public Transform firePoint;
     public LayerMask hitLayers = -1;
     private float nextFireTime = 0f;
@@ -59,8 +58,6 @@ public class Weapon : MonoBehaviour
 
             if (target != null)
             {
-                Debug.Log("Found Health component! Applying " + damage + " damage");
-
                 if(target.isPlayer)
                 {
                     PhotonView targetPhotonView = target.GetComponent<PhotonView>();
