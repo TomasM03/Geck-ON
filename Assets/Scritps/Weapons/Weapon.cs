@@ -61,10 +61,17 @@ public class Weapon : MonoBehaviour
             {
                 Debug.Log("Found Health component! Applying " + damage + " damage");
 
-                PhotonView targetPhotonView = target.GetComponent<PhotonView>();
-                if (targetPhotonView != null)
+                if(target.isPlayer)
                 {
-                    targetPhotonView.RPC("ApplyDamage", targetPhotonView.Owner, damage);
+                    PhotonView targetPhotonView = target.GetComponent<PhotonView>();
+                    if (targetPhotonView != null)
+                    {
+                        targetPhotonView.RPC("ApplyDamage", targetPhotonView.Owner, damage);
+                    }
+                    else
+                    {
+                        target.TakeDamage(damage);
+                    }
                 }
                 else
                 {

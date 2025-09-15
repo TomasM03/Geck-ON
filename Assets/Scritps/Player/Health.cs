@@ -24,19 +24,31 @@ public class Health : MonoBehaviourPun
     //DamageSyst
     public void TakeDamage(float damage)
     {
-        if (!photonView.IsMine)
+        if(isPlayer)
         {
-            return;
+            if (!photonView.IsMine)
+            {
+                return;
+            }
+
+            currentHealth -= damage;
+
+            photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
+
+
+            if (currentHealth <= 0)
+            {
+                photonView.RPC("SyncDeath", RpcTarget.All);
+            }
         }
-
-        currentHealth -= damage;
-
-        photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
-
-
-        if (currentHealth <= 0)
+        else
         {
-            photonView.RPC("SyncDeath", RpcTarget.All);
+            currentHealth -= damage;
+
+            if (currentHealth <= 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
