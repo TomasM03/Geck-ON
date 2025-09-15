@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using TMPro;
 
 public class Health : MonoBehaviourPun
 {
@@ -14,6 +15,8 @@ public class Health : MonoBehaviourPun
     public float deathDelay = 2f;
     //Health
     private float currentHealth;
+
+    public TMP_Text healthTxt;
 
     void Start()
     {
@@ -30,11 +33,25 @@ public class Health : MonoBehaviourPun
             {
                 return;
             }
+
             currentHealth -= damage;
+
             photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
             if (currentHealth <= 0)
             {
                 photonView.RPC("SyncDeath", RpcTarget.All);
+            }
+
+
+            healthTxt.text = currentHealth.ToString() + "%";
+
+            if (currentHealth < 60)
+            {
+                healthTxt.color = Color.yellow;
+            }
+            else if (currentHealth < 30)
+            {
+                healthTxt.color = Color.red;
             }
         }
         else //Si es objeto

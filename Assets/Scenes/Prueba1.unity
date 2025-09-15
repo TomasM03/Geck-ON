@@ -326,6 +326,7 @@ MonoBehaviour:
   isPlayer: 0
   mainMenuScene: MainMenu
   deathDelay: 2
+  healthTxt: {fileID: 0}
 --- !u!65 &441599714
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -662,6 +663,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4571078439298390395, guid: 9d5b0e2132e2e6e4293f943c8658e7a4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4571078440192437315, guid: 9d5b0e2132e2e6e4293f943c8658e7a4, type: 3}
       propertyPath: m_Name
       value: DeathCanvas
