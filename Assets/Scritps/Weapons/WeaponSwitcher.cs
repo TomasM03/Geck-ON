@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class WeaponSwitcher : MonoBehaviourPun
 {
-    [Header("Weapon Container")]
     public Transform weaponHolder;
 
     public GameObject[] weapons;

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingCallbacks
 {
+    //Refs
     public GameObject playerPrefab;
     public Transform spawnPoint;
 
@@ -20,6 +21,7 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
         ConectPhoton();
     }
 
+    //SaveNicka
     void NicknameConfig()
     {
         if (GameManager.Instance != null)
@@ -54,6 +56,7 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
         PhotonNetwork.JoinOrCreateRoom("SalaJuego", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
     }
 
+    //Void JoinRoom
     public void OnJoinedRoom()
     {
         if (showLogs) Debug.Log("Unido a la sala: " + PhotonNetwork.CurrentRoom.Name);
@@ -62,16 +65,19 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
         SpawnPlayer();
     }
 
+    //Void Entrar Sala
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (showLogs) Debug.Log("Nuevo jugador entró: " + newPlayer.NickName);
     }
 
+    //Void Salir sala
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
         if (showLogs) Debug.Log("Jugador salió: " + otherPlayer.NickName);
     }
 
+    //Void Desconectar
     public void OnDisconnected(DisconnectCause cause)
     {
         if (showLogs) Debug.LogWarning("Desconectado de Photon: " + cause);
@@ -86,6 +92,8 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
     {
         if (showLogs) Debug.LogError("Error creando sala: " + message);
     }
+
+    //Error al unir Sala
     public void OnJoinRoomFailed(short returnCode, string message)
     {
         if (showLogs) Debug.LogError("Error uniéndose a sala: " + message);
@@ -94,7 +102,7 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
     public void OnLeftRoom() { }
     public void OnFriendListUpdate(List<FriendInfo> friendList) { }
 
-
+    //Spawn Player en SpawnPosition de la escena
     void SpawnPlayer()
     {
         Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : Vector3.zero;

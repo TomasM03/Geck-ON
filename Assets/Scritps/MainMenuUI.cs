@@ -19,6 +19,7 @@ public class MainMenuUI : MonoBehaviour
         Upload();
     }
 
+    //Void Sets
     void SetUI()
     {
         if (playButton != null)
@@ -34,6 +35,7 @@ public class MainMenuUI : MonoBehaviour
         }
     }
 
+
     void Upload()
     {
         if (GameManager.Instance != null && nicknameInput != null)
@@ -47,6 +49,7 @@ public class MainMenuUI : MonoBehaviour
         }
     }
 
+    //Nick Refresh
     public void NicknameRefresh(string nuevoNickname)
     {
         nuevoNickname = nuevoNickname.Trim();
@@ -57,7 +60,7 @@ public class MainMenuUI : MonoBehaviour
             return;
         }
 
-        nuevoNickname = FiltrarNickname(nuevoNickname);
+        nuevoNickname = NickNameFilter(nuevoNickname);
 
         if (GameManager.Instance != null)
         {
@@ -67,7 +70,7 @@ public class MainMenuUI : MonoBehaviour
         if (Logs) Debug.Log("Nickname actualizado: " + nuevoNickname);
     }
 
-    string FiltrarNickname(string nickname)
+    string NickNameFilter(string nickname)
     {
         string caracteresPermitidos = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
         string nicknameFiltrado = "";
@@ -83,6 +86,7 @@ public class MainMenuUI : MonoBehaviour
         return nicknameFiltrado;
     }
 
+    //Play Button
     public void Play()
     {
         if (nicknameInput != null)
