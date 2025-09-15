@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1cc9bdbef725be04b9358845f641e466, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3df82cf7d272fc54fb6df976c1b40338, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -301,6 +301,13 @@ MonoBehaviour:
   weapons:
   - {fileID: 4984972450381746748}
   - {fileID: 1927556583448348982}
+  weaponUI1: {fileID: 2076592523922813691}
+  weaponUI2: {fileID: 6771790574951148371}
+  weaponSprites:
+  - {fileID: 21300000, guid: 9500ff58345a2c147b280bdb4b777f34, type: 3}
+  - {fileID: 21300000, guid: 3df82cf7d272fc54fb6df976c1b40338, type: 3}
+  - {fileID: 21300000, guid: d4a934c8b73780d4c8a97b4e5638e026, type: 3}
+  - {fileID: 21300000, guid: d4e0642fc5bb12846b0b396eca436b48, type: 3}
 --- !u!114 &5580377884184144332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -552,7 +559,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8af9e2d7f87a9dc45911862ea56c7bc1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d4a934c8b73780d4c8a97b4e5638e026, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
