@@ -31,7 +31,7 @@ public class RespawnCanvas : MonoBehaviour
                 if (health != null)
                 {
                     health.Respawn();
-                    gameObject.SetActive(false);
+                    deathPanel.SetActive(false);
                     break;
                 }
             }
