@@ -11,7 +11,7 @@ public class Health : MonoBehaviour
     public bool isPlayer = false;
 
     //DeadSets
-    public string mainMenuScene;
+    public string mainMenuScene = "MainMenu";
     public float deathDelay = 2f;
     
     //Health
