@@ -12,7 +12,6 @@ public class Health : MonoBehaviourPun
     //DeadSets
     public string mainMenuScene = "MainMenu";
     public float deathDelay = 2f;
-
     //Health
     private float currentHealth;
 
@@ -24,27 +23,23 @@ public class Health : MonoBehaviourPun
     //DamageSyst
     public void TakeDamage(float damage)
     {
-        if(isPlayer)
+        //Si es jugador
+        if (isPlayer)
         {
             if (!photonView.IsMine)
             {
                 return;
             }
-
             currentHealth -= damage;
-
             photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
-
-
             if (currentHealth <= 0)
             {
                 photonView.RPC("SyncDeath", RpcTarget.All);
             }
         }
-        else
+        else //Si es objeto
         {
             currentHealth -= damage;
-
             if (currentHealth <= 0)
             {
                 Destroy(gameObject);
@@ -56,12 +51,9 @@ public class Health : MonoBehaviourPun
     void ApplyDamage(float damage)
     {
         currentHealth -= damage;
-
         // Sincronizar HP
         photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
-
         Debug.Log(currentHealth);
-
         if (currentHealth <= 0)
         {
             photonView.RPC("SyncDeath", RpcTarget.All);
@@ -80,7 +72,7 @@ public class Health : MonoBehaviourPun
         Die();
     }
 
-    //DiedVoid
+    //DiedVoid - MODIFICADO
     void Die()
     {
         if (isPlayer)
@@ -89,7 +81,25 @@ public class Health : MonoBehaviourPun
             if (pv != null && pv.IsMine)
             {
                 Debug.Log("Te mataron pete");
-                StartCoroutine(ReturnToMainMenu());
+                // Desactivar jugador pero NO salir de la escena
+                PlayerController playerController = GetComponent<PlayerController>();
+                if (playerController != null)
+                {
+                    playerController.enabled = false;
+                }
+
+                PlayerCamera playerCam = GetComponentInChildren<PlayerCamera>();
+                if (playerCam != null)
+                {
+                    playerCam.UnlockCursor();
+                }
+
+                // Mostrar canvas de muerte
+                GameObject deathCanvas = GameObject.Find("DeathCanvas");
+                if (deathCanvas != null)
+                {
+                    deathCanvas.SetActive(true);
+                }
             }
             else
             {
@@ -103,31 +113,45 @@ public class Health : MonoBehaviourPun
         }
     }
 
-    //BackMenuNUM
-    IEnumerator ReturnToMainMenu()
+    //RespawnVoid
+    public void Respawn()
     {
+        if (!photonView.IsMine) return;
+
+        currentHealth = maxHealth;
+
+        // Reactivar jugador
         PlayerController playerController = GetComponent<PlayerController>();
         if (playerController != null)
         {
-            playerController.enabled = false;
+            playerController.enabled = true;
         }
 
         PlayerCamera playerCam = GetComponentInChildren<PlayerCamera>();
         if (playerCam != null)
         {
-            playerCam.DisableCamera();
+            playerCam.LockCursor();
         }
 
-        yield return new WaitForSeconds(deathDelay);
-
-        if (PhotonNetwork.IsConnected)
+        // Mover a posición de spawn
+        NetworkManager networkManager = FindObjectOfType<NetworkManager>();
+        if (networkManager != null && networkManager.spawnPoint != null)
         {
-            PhotonNetwork.LeaveRoom();
-            PhotonNetwork.Disconnect();
+            Vector3 spawnPos = networkManager.spawnPoint.position;
+            spawnPos += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+            transform.position = spawnPos;
         }
 
-        SceneManager.LoadScene(mainMenuScene);
+        photonView.RPC("SyncRespawn", RpcTarget.Others);
     }
+
+    [PunRPC]
+    void SyncRespawn()
+    {
+        gameObject.SetActive(true);
+        currentHealth = maxHealth;
+    }
+
 
     //Percentage
     public float GetHealthPercentage()
