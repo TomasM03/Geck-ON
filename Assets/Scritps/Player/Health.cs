@@ -124,8 +124,8 @@ public class Health : MonoBehaviourPun
             PhotonView pv = GetComponent<PhotonView>();
             if (pv != null && pv.IsMine)
             {
-                Debug.Log("Te mataron pete");
-                // Desactivar jugador pero NO salir de la escena
+                Debug.Log("You Died");
+              
                 PlayerController playerController = GetComponent<PlayerController>();
                 if (playerController != null)
                 {
@@ -145,7 +145,7 @@ public class Health : MonoBehaviourPun
             }
             else
             {
-                Debug.Log("+1 Kill Anashe");
+                Debug.Log("+1 Kill");
                 gameObject.SetActive(false);
             }
         }
