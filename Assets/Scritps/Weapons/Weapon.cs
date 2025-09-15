@@ -12,18 +12,15 @@ public class Weapon : MonoBehaviour
     public float fireRate = 0.5f;
     public int bulletsPerShot = 1;
     public float spread = 0f;
-
     [Header("References")]
     public Transform firePoint;
     public LayerMask hitLayers = -1;
-
     private float nextFireTime = 0f;
 
     void Update()
     {
         if (!GetComponentInParent<PhotonView>().IsMine)
             return;
-
         if (Input.GetMouseButton(0) && Time.time >= nextFireTime)
         {
             Fire();
@@ -33,8 +30,7 @@ public class Weapon : MonoBehaviour
 
     void Fire()
     {
-        Debug.Log(weaponName + "shoot");
-
+        Debug.Log(weaponName + " shoot");
         for (int i = 0; i < bulletsPerShot; i++)
         {
             ShootRaycast();
@@ -44,7 +40,6 @@ public class Weapon : MonoBehaviour
     void ShootRaycast()
     {
         Vector3 shootDirection = firePoint.forward;
-
         if (spread > 0)
         {
             shootDirection += Random.insideUnitSphere * spread * 0.01f;
@@ -54,14 +49,28 @@ public class Weapon : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(firePoint.position, shootDirection, out hit, range, hitLayers))
         {
-            Debug.Log("hit: " + hit.collider.name);
 
             Health target = hit.collider.GetComponent<Health>();
-            if (target != null)
+
+            if (target == null)
             {
-                target.TakeDamage(damage);
+                target = hit.collider.GetComponentInParent<Health>();
             }
 
+            if (target != null)
+            {
+                Debug.Log("Found Health component! Applying " + damage + " damage");
+
+                PhotonView targetPhotonView = target.GetComponent<PhotonView>();
+                if (targetPhotonView != null)
+                {
+                    targetPhotonView.RPC("ApplyDamage", targetPhotonView.Owner, damage);
+                }
+                else
+                {
+                    target.TakeDamage(damage);
+                }
+            }
         }
 
         Debug.DrawRay(firePoint.position, shootDirection * range, Color.red, 0.5f);
