@@ -32,7 +32,6 @@ public class WeaponPickup : MonoBehaviourPun
             Debug.LogError("No hay WeaponData asignado en " + gameObject.name);
         }
 
-        // Asegurarse de que el visual esté activo al inicio
         if (visualModel != null)
         {
             visualModel.SetActive(true);
@@ -50,19 +49,16 @@ public class WeaponPickup : MonoBehaviourPun
 
     void OnTriggerEnter(Collider other)
     {
-        // Solo el Master Client procesa pickups (evita duplicados)
         if (!PhotonNetwork.IsMasterClient)
             return;
 
         if (!isAvailable)
             return;
 
-        // Verificar si es un jugador
         PhotonView playerPhotonView = other.GetComponent<PhotonView>();
         if (playerPhotonView == null)
             return;
 
-        // Solo procesar si es el jugador local que colisionó
         if (!playerPhotonView.IsMine)
             return;
 
@@ -70,20 +66,16 @@ public class WeaponPickup : MonoBehaviourPun
         if (playerInventory == null)
             return;
 
-        // Verificar si el jugador ya tiene esta arma
         if (playerInventory.HasWeapon(weaponData))
         {
             Debug.Log("El jugador ya tiene esta arma");
             return;
         }
 
-        // Dar el arma directamente al jugador local
         playerInventory.AddWeapon(weaponData);
 
-        // Desactivar pickup para todos
         photonView.RPC("DisablePickup", RpcTarget.AllBuffered);
 
-        // Programar respawn si está activado
         if (respawnAfterPickup)
         {
             Invoke("RespawnPickup", respawnTime);
@@ -104,7 +96,6 @@ public class WeaponPickup : MonoBehaviourPun
         }
         else
         {
-            // Si no hay visualModel, desactivar el objeto completo
             gameObject.SetActive(false);
         }
     }

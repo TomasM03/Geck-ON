@@ -20,7 +20,6 @@ public class WeaponVisuals : MonoBehaviourPun
 
     void Start()
     {
-        // Desactivar todos los modelos al inicio
         HideAllModels();
     }
 
@@ -35,7 +34,6 @@ public class WeaponVisuals : MonoBehaviourPun
             currentModel.SetActive(false);
         }
 
-        // Buscar y mostrar el nuevo modelo
         foreach (WeaponModel wm in weaponModels)
         {
             if (wm.weaponName == weaponName && wm.model != null)
@@ -46,7 +44,6 @@ public class WeaponVisuals : MonoBehaviourPun
                 if (showLogs)
                     Debug.Log("Mostrando modelo: " + weaponName);
 
-                // Sincronizar visual con otros jugadores
                 photonView.RPC("SyncWeaponVisual", RpcTarget.OthersBuffered, weaponName);
                 return;
             }
@@ -58,13 +55,11 @@ public class WeaponVisuals : MonoBehaviourPun
     [PunRPC]
     void SyncWeaponVisual(string weaponName)
     {
-        // Ocultar modelo actual
         if (currentModel != null)
         {
             currentModel.SetActive(false);
         }
 
-        // Mostrar el modelo sincronizado
         foreach (WeaponModel wm in weaponModels)
         {
             if (wm.weaponName == weaponName && wm.model != null)

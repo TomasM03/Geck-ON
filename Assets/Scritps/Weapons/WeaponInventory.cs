@@ -27,7 +27,6 @@ public class WeaponInventory : MonoBehaviourPun
 
         weaponController = GetComponent<WeaponController>();
 
-        // Agregar arma inicial
         if (startingWeapon != null)
         {
             AddWeapon(startingWeapon);
@@ -48,7 +47,6 @@ public class WeaponInventory : MonoBehaviourPun
 
     void HandleInput()
     {
-        // Cambio con teclas numéricas
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SwitchWeapon(0);
@@ -82,14 +80,12 @@ public class WeaponInventory : MonoBehaviourPun
             return;
         }
 
-        // Verificar si ya tiene el arma
         if (HasWeapon(newWeapon))
         {
             if (showLogs) Debug.Log("Ya tienes esta arma: " + newWeapon.weaponName);
             return;
         }
 
-        // Verificar límite de armas
         if (weapons.Count >= maxWeapons)
         {
             if (showLogs) Debug.Log("Inventario lleno. Reemplazando arma actual.");
@@ -98,7 +94,7 @@ public class WeaponInventory : MonoBehaviourPun
         else
         {
             weapons.Add(newWeapon);
-            currentWeaponIndex = weapons.Count - 1; // Cambiar a la nueva arma
+            currentWeaponIndex = weapons.Count - 1;
         }
 
         if (showLogs) Debug.Log("Arma agregada: " + newWeapon.weaponName);
@@ -121,7 +117,6 @@ public class WeaponInventory : MonoBehaviourPun
         if (weapons.Count == 0)
             return;
 
-        // Wrap around (ciclo infinito)
         if (index < 0)
             index = weapons.Count - 1;
         else if (index >= weapons.Count)
@@ -138,23 +133,19 @@ public class WeaponInventory : MonoBehaviourPun
 
         WeaponData currentWeapon = weapons[currentWeaponIndex];
 
-        // Notificar al WeaponController
         if (weaponController != null)
         {
             weaponController.SetWeapon(currentWeapon);
         }
 
-        // Actualizar visuals del arma
         WeaponVisuals weaponVisuals = GetComponent<WeaponVisuals>();
         if (weaponVisuals != null)
         {
             weaponVisuals.ShowWeapon(currentWeapon.weaponName);
         }
 
-        // Actualizar UI
         UpdateUI();
 
-        // Sincronizar con otros jugadores (opcional)
         if (photonView.IsMine)
         {
             photonView.RPC("SyncWeapon", RpcTarget.OthersBuffered, currentWeaponIndex);
@@ -167,7 +158,6 @@ public class WeaponInventory : MonoBehaviourPun
     void SyncWeapon(int weaponIndex)
     {
         currentWeaponIndex = weaponIndex;
-        // Aquí podrías actualizar visuals del arma para otros jugadores
     }
 
     void UpdateUI()

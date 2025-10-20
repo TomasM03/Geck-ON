@@ -68,7 +68,6 @@ public class WeaponController : MonoBehaviourPun
         RaycastHit hit;
         if (Physics.Raycast(firePoint.position, shootDirection, out hit, currentWeaponData.range, hitLayers))
         {
-            // Buscar componente Health en el objeto impactado
             Health target = hit.collider.GetComponent<Health>();
 
             if (target == null)
