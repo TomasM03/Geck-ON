@@ -105,9 +105,19 @@ public class NetworkManager : MonoBehaviour, IConnectionCallbacks, IMatchmakingC
     //Spawn Player en SpawnPosition de la escena
     void SpawnPlayer()
     {
-        Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : Vector3.zero;
+        Vector3 spawnPosition;
 
-        spawnPosition += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+        // NUEVO: Usar GameModeManager si existe
+        if (GameModeManager.Instance != null)
+        {
+            spawnPosition = GameModeManager.Instance.GetSpawnPointForPlayer(PhotonNetwork.LocalPlayer);
+        }
+        else
+        {
+            // Fallback al sistema anterior
+            spawnPosition = spawnPoint != null ? spawnPoint.position : Vector3.zero;
+            spawnPosition += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+        }
 
         GameObject player = PhotonNetwork.Instantiate(playerPrefab.name, spawnPosition, Quaternion.identity);
 

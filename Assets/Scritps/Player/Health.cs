@@ -125,7 +125,12 @@ public class Health : MonoBehaviourPun
             if (pv != null && pv.IsMine)
             {
                 Debug.Log("You Died");
-              
+
+                if (GameModeManager.Instance != null)
+                {
+                    GameModeManager.Instance.NotifyPlayerKilled(pv, null);
+                }
+
                 PlayerController playerController = GetComponent<PlayerController>();
                 if (playerController != null)
                 {

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -482,7 +482,6 @@ GameObject:
   - component: {fileID: 136224277}
   - component: {fileID: 136224276}
   - component: {fileID: 136224275}
-  - component: {fileID: 136224274}
   - component: {fileID: 136224273}
   m_Layer: 0
   m_Name: Cube (11)
@@ -528,23 +527,6 @@ MonoBehaviour:
   sceneViewId: 17
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &136224274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 136224271}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &136224275
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1229,7 +1211,6 @@ GameObject:
   - component: {fileID: 224081370}
   - component: {fileID: 224081369}
   - component: {fileID: 224081368}
-  - component: {fileID: 224081367}
   - component: {fileID: 224081366}
   m_Layer: 0
   m_Name: Cube (17)
@@ -1275,23 +1256,6 @@ MonoBehaviour:
   sceneViewId: 24
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &224081367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 224081364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &224081368
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1543,6 +1507,53 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1518559196927116175, guid: b26617902485dfe43a7f5b25592c632d, type: 3}
   m_PrefabInstance: {fileID: 287216605}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &312888618
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 312888620}
+  - component: {fileID: 312888619}
+  m_Layer: 0
+  m_Name: Scripter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &312888619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312888618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e7f0985a1ca5d43abd6f42d92f5424, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameModeType: 0
+  networkManager: {fileID: 1044427735}
+  showLogs: 1
+--- !u!4 &312888620
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312888618}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 68.26123, y: 14.249575, z: -41.0482}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &313387597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1925,7 +1936,6 @@ GameObject:
   - component: {fileID: 367601385}
   - component: {fileID: 367601384}
   - component: {fileID: 367601383}
-  - component: {fileID: 367601382}
   - component: {fileID: 367601381}
   m_Layer: 0
   m_Name: Cube (1)
@@ -1971,23 +1981,6 @@ MonoBehaviour:
   sceneViewId: 7
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &367601382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 367601379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &367601383
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2177,7 +2170,6 @@ GameObject:
   - component: {fileID: 415430351}
   - component: {fileID: 415430350}
   - component: {fileID: 415430349}
-  - component: {fileID: 415430348}
   - component: {fileID: 415430347}
   m_Layer: 0
   m_Name: Cube (6)
@@ -2223,23 +2215,6 @@ MonoBehaviour:
   sceneViewId: 11
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &415430348
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 415430345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &415430349
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2372,7 +2347,6 @@ GameObject:
   - component: {fileID: 429314619}
   - component: {fileID: 429314618}
   - component: {fileID: 429314617}
-  - component: {fileID: 429314616}
   - component: {fileID: 429314615}
   m_Layer: 0
   m_Name: Cube (13)
@@ -2418,23 +2392,6 @@ MonoBehaviour:
   sceneViewId: 20
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &429314616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 429314613}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &429314617
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2579,7 +2536,6 @@ GameObject:
   - component: {fileID: 441599716}
   - component: {fileID: 441599715}
   - component: {fileID: 441599714}
-  - component: {fileID: 441599713}
   - component: {fileID: 441599718}
   m_Layer: 0
   m_Name: Cube
@@ -2588,23 +2544,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &441599713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 441599712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &441599714
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2831,7 +2770,6 @@ GameObject:
   - component: {fileID: 522571925}
   - component: {fileID: 522571924}
   - component: {fileID: 522571923}
-  - component: {fileID: 522571922}
   - component: {fileID: 522571921}
   m_Layer: 0
   m_Name: Cube (21)
@@ -2877,23 +2815,6 @@ MonoBehaviour:
   sceneViewId: 27
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &522571922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522571919}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &522571923
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3179,7 +3100,6 @@ GameObject:
   - component: {fileID: 578743464}
   - component: {fileID: 578743463}
   - component: {fileID: 578743462}
-  - component: {fileID: 578743461}
   - component: {fileID: 578743460}
   m_Layer: 0
   m_Name: Cube (8)
@@ -3225,23 +3145,6 @@ MonoBehaviour:
   sceneViewId: 14
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &578743461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 578743458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &578743462
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3653,7 +3556,6 @@ GameObject:
   - component: {fileID: 683853153}
   - component: {fileID: 683853152}
   - component: {fileID: 683853151}
-  - component: {fileID: 683853150}
   - component: {fileID: 683853149}
   m_Layer: 0
   m_Name: Cube (15)
@@ -3699,23 +3601,6 @@ MonoBehaviour:
   sceneViewId: 21
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &683853150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 683853147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &683853151
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4088,7 +3973,6 @@ GameObject:
   - component: {fileID: 851101850}
   - component: {fileID: 851101849}
   - component: {fileID: 851101848}
-  - component: {fileID: 851101847}
   - component: {fileID: 851101846}
   m_Layer: 0
   m_Name: Cube (5)
@@ -4134,23 +4018,6 @@ MonoBehaviour:
   sceneViewId: 12
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &851101847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851101844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &851101848
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4406,7 +4273,6 @@ GameObject:
   - component: {fileID: 910716294}
   - component: {fileID: 910716293}
   - component: {fileID: 910716292}
-  - component: {fileID: 910716291}
   - component: {fileID: 910716290}
   m_Layer: 0
   m_Name: Cube (12)
@@ -4452,23 +4318,6 @@ MonoBehaviour:
   sceneViewId: 18
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &910716291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 910716288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &910716292
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4649,7 +4498,6 @@ GameObject:
   - component: {fileID: 963831331}
   - component: {fileID: 963831330}
   - component: {fileID: 963831329}
-  - component: {fileID: 963831328}
   - component: {fileID: 963831327}
   m_Layer: 0
   m_Name: Cube (30)
@@ -4695,23 +4543,6 @@ MonoBehaviour:
   sceneViewId: 36
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &963831328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963831325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &963831329
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4787,7 +4618,6 @@ GameObject:
   - component: {fileID: 968502370}
   - component: {fileID: 968502369}
   - component: {fileID: 968502368}
-  - component: {fileID: 968502367}
   - component: {fileID: 968502366}
   m_Layer: 0
   m_Name: Cube (28)
@@ -4833,23 +4663,6 @@ MonoBehaviour:
   sceneViewId: 35
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &968502367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 968502364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &968502368
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4982,7 +4795,6 @@ GameObject:
   - component: {fileID: 999992969}
   - component: {fileID: 999992968}
   - component: {fileID: 999992967}
-  - component: {fileID: 999992966}
   - component: {fileID: 999992965}
   m_Layer: 0
   m_Name: Cube (24)
@@ -5028,23 +4840,6 @@ MonoBehaviour:
   sceneViewId: 31
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &999992966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 999992963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &999992967
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5177,7 +4972,6 @@ GameObject:
   - component: {fileID: 1011563392}
   - component: {fileID: 1011563391}
   - component: {fileID: 1011563390}
-  - component: {fileID: 1011563389}
   - component: {fileID: 1011563388}
   m_Layer: 0
   m_Name: Cube (18)
@@ -5223,23 +5017,6 @@ MonoBehaviour:
   sceneViewId: 23
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1011563389
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1011563386}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1011563390
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5619,7 +5396,6 @@ GameObject:
   - component: {fileID: 1135027132}
   - component: {fileID: 1135027131}
   - component: {fileID: 1135027130}
-  - component: {fileID: 1135027129}
   - component: {fileID: 1135027128}
   m_Layer: 0
   m_Name: Cube (20)
@@ -5665,23 +5441,6 @@ MonoBehaviour:
   sceneViewId: 26
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1135027129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1135027126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1135027130
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5814,7 +5573,6 @@ GameObject:
   - component: {fileID: 1155344196}
   - component: {fileID: 1155344195}
   - component: {fileID: 1155344194}
-  - component: {fileID: 1155344193}
   - component: {fileID: 1155344192}
   m_Layer: 0
   m_Name: Cube (29)
@@ -5860,23 +5618,6 @@ MonoBehaviour:
   sceneViewId: 34
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1155344193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1155344190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1155344194
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6133,7 +5874,6 @@ GameObject:
   - component: {fileID: 1295494104}
   - component: {fileID: 1295494103}
   - component: {fileID: 1295494102}
-  - component: {fileID: 1295494101}
   - component: {fileID: 1295494100}
   m_Layer: 0
   m_Name: Cube (14)
@@ -6179,23 +5919,6 @@ MonoBehaviour:
   sceneViewId: 19
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1295494101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1295494098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1295494102
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6271,7 +5994,6 @@ GameObject:
   - component: {fileID: 1351600727}
   - component: {fileID: 1351600726}
   - component: {fileID: 1351600725}
-  - component: {fileID: 1351600724}
   - component: {fileID: 1351600723}
   m_Layer: 0
   m_Name: Cube (27)
@@ -6317,23 +6039,6 @@ MonoBehaviour:
   sceneViewId: 33
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1351600724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1351600721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1351600725
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6409,7 +6114,6 @@ GameObject:
   - component: {fileID: 1364875274}
   - component: {fileID: 1364875273}
   - component: {fileID: 1364875272}
-  - component: {fileID: 1364875271}
   - component: {fileID: 1364875270}
   m_Layer: 0
   m_Name: Cube (2)
@@ -6455,23 +6159,6 @@ MonoBehaviour:
   sceneViewId: 8
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1364875271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1364875268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1364875272
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6666,7 +6353,6 @@ GameObject:
   - component: {fileID: 1395302524}
   - component: {fileID: 1395302523}
   - component: {fileID: 1395302522}
-  - component: {fileID: 1395302521}
   - component: {fileID: 1395302520}
   m_Layer: 0
   m_Name: Cube (25)
@@ -6712,23 +6398,6 @@ MonoBehaviour:
   sceneViewId: 30
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1395302521
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1395302518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1395302522
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6935,7 +6604,6 @@ GameObject:
   - component: {fileID: 1462747056}
   - component: {fileID: 1462747055}
   - component: {fileID: 1462747054}
-  - component: {fileID: 1462747053}
   - component: {fileID: 1462747052}
   m_Layer: 0
   m_Name: Cube (9)
@@ -6981,23 +6649,6 @@ MonoBehaviour:
   sceneViewId: 16
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1462747053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1462747050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1462747054
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7359,7 +7010,6 @@ GameObject:
   - component: {fileID: 1579260349}
   - component: {fileID: 1579260348}
   - component: {fileID: 1579260347}
-  - component: {fileID: 1579260346}
   - component: {fileID: 1579260345}
   m_Layer: 0
   m_Name: Cube (3)
@@ -7405,23 +7055,6 @@ MonoBehaviour:
   sceneViewId: 9
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1579260346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1579260343}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1579260347
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7497,7 +7130,6 @@ GameObject:
   - component: {fileID: 1592586250}
   - component: {fileID: 1592586249}
   - component: {fileID: 1592586248}
-  - component: {fileID: 1592586247}
   - component: {fileID: 1592586246}
   m_Layer: 0
   m_Name: Cube (7)
@@ -7543,23 +7175,6 @@ MonoBehaviour:
   sceneViewId: 13
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1592586247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1592586244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1592586248
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7811,7 +7426,6 @@ GameObject:
   - component: {fileID: 1636290600}
   - component: {fileID: 1636290599}
   - component: {fileID: 1636290598}
-  - component: {fileID: 1636290597}
   - component: {fileID: 1636290596}
   m_Layer: 0
   m_Name: Cube (19)
@@ -7857,23 +7471,6 @@ MonoBehaviour:
   sceneViewId: 25
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1636290597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1636290594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1636290598
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8185,7 +7782,6 @@ GameObject:
   - component: {fileID: 1744058787}
   - component: {fileID: 1744058786}
   - component: {fileID: 1744058785}
-  - component: {fileID: 1744058784}
   - component: {fileID: 1744058783}
   m_Layer: 0
   m_Name: Cube (4)
@@ -8231,23 +7827,6 @@ MonoBehaviour:
   sceneViewId: 10
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1744058784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744058781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1744058785
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8380,7 +7959,6 @@ GameObject:
   - component: {fileID: 1777341853}
   - component: {fileID: 1777341852}
   - component: {fileID: 1777341851}
-  - component: {fileID: 1777341850}
   - component: {fileID: 1777341849}
   m_Layer: 0
   m_Name: Cube (31)
@@ -8426,23 +8004,6 @@ MonoBehaviour:
   sceneViewId: 37
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1777341850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1777341847}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1777341851
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8835,7 +8396,6 @@ GameObject:
   - component: {fileID: 1901173094}
   - component: {fileID: 1901173093}
   - component: {fileID: 1901173092}
-  - component: {fileID: 1901173091}
   - component: {fileID: 1901173090}
   m_Layer: 0
   m_Name: Cube (32)
@@ -8881,23 +8441,6 @@ MonoBehaviour:
   sceneViewId: 38
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1901173091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1901173088}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1901173092
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8973,7 +8516,6 @@ GameObject:
   - component: {fileID: 1906677396}
   - component: {fileID: 1906677395}
   - component: {fileID: 1906677394}
-  - component: {fileID: 1906677393}
   - component: {fileID: 1906677392}
   m_Layer: 0
   m_Name: Cube (22)
@@ -9019,23 +8561,6 @@ MonoBehaviour:
   sceneViewId: 28
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1906677393
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1906677390}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1906677394
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9423,7 +8948,6 @@ GameObject:
   - component: {fileID: 1997185295}
   - component: {fileID: 1997185294}
   - component: {fileID: 1997185293}
-  - component: {fileID: 1997185292}
   - component: {fileID: 1997185291}
   m_Layer: 0
   m_Name: Cube (23)
@@ -9469,23 +8993,6 @@ MonoBehaviour:
   sceneViewId: 29
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1997185292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1997185289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1997185293
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9561,7 +9068,6 @@ GameObject:
   - component: {fileID: 1998261600}
   - component: {fileID: 1998261599}
   - component: {fileID: 1998261598}
-  - component: {fileID: 1998261597}
   - component: {fileID: 1998261596}
   m_Layer: 0
   m_Name: Cube (16)
@@ -9607,23 +9113,6 @@ MonoBehaviour:
   sceneViewId: 22
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1998261597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1998261594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &1998261598
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9730,7 +9219,6 @@ GameObject:
   - component: {fileID: 2013781483}
   - component: {fileID: 2013781482}
   - component: {fileID: 2013781481}
-  - component: {fileID: 2013781480}
   - component: {fileID: 2013781479}
   m_Layer: 0
   m_Name: Cube (10)
@@ -9776,23 +9264,6 @@ MonoBehaviour:
   sceneViewId: 15
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2013781480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2013781477}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &2013781481
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9935,7 +9406,6 @@ GameObject:
   - component: {fileID: 2120457305}
   - component: {fileID: 2120457304}
   - component: {fileID: 2120457303}
-  - component: {fileID: 2120457302}
   - component: {fileID: 2120457301}
   m_Layer: 0
   m_Name: Cube (26)
@@ -9981,23 +9451,6 @@ MonoBehaviour:
   sceneViewId: 32
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2120457302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2120457299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9432b4e03072f843ae6566ae2ad847c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  isPlayer: 0
-  mainMenuScene: MainMenu
-  deathDelay: 2
-  healthTxt: {fileID: 0}
 --- !u!65 &2120457303
 BoxCollider:
   m_ObjectHideFlags: 0

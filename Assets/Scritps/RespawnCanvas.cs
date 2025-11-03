@@ -27,6 +27,14 @@ public class RespawnCanvas : MonoBehaviour
         {
             if (pv.IsMine)
             {
+                // NUEVO: Verificar si puede respawnear
+                if (GameModeManager.Instance != null &&
+                    !GameModeManager.Instance.CanPlayerRespawn(pv))
+                {
+                    Debug.Log("No puedes respawnear aún");
+                    return;
+                }
+
                 Health health = pv.GetComponent<Health>();
                 if (health != null)
                 {
