@@ -11,7 +11,7 @@ public class TeamDeathmatchMode : GameModeBase
 
     private int teamAKills = 0;
     private int teamBKills = 0;
-    private int targetKills = 10;
+    private int targetKills = 2;
 
     protected override void OnModeInitialized()
     {
@@ -64,14 +64,14 @@ public class TeamDeathmatchMode : GameModeBase
 
     void CalculateTargetKills()
     {
-        if (PhotonNetwork.CurrentRoom == null)
-            return;
+ //       if (PhotonNetwork.CurrentRoom == null)
+   //         return;
 
-        int totalPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
-        targetKills = totalPlayers * killsPerPlayer;
+     //   int totalPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
+       // targetKills = totalPlayers * killsPerPlayer;
 
-        if (showLogs)
-            Debug.Log("[TDM] Jugadores: " + totalPlayers + " | Kills objetivo: " + targetKills);
+        //if (showLogs)
+          //  Debug.Log("[TDM] Jugadores: " + totalPlayers + " | Kills objetivo: " + targetKills);
     }
 
     protected override void OnMatchStarted()
