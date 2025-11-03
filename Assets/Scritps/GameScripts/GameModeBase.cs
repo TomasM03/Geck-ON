@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 
 public abstract class GameModeBase : MonoBehaviour
 {
@@ -28,10 +26,23 @@ public abstract class GameModeBase : MonoBehaviour
         if (showLogs)
             Debug.Log("[" + modeName + "] Inicializando modo de juego");
 
+        SyncStateFromRoom();
         OnModeInitialized();
     }
 
     protected virtual void OnModeInitialized() { }
+
+    public void SyncStateFromRoom()
+    {
+        if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("GameState"))
+        {
+            int stateValue = (int)PhotonNetwork.CurrentRoom.CustomProperties["GameState"];
+            currentState = (GameState)stateValue;
+
+            if (showLogs)
+                Debug.Log("[" + modeName + "] Estado sincronizado desde Room: " + currentState);
+        }
+    }
 
     public virtual void UpdateGameMode()
     {
@@ -93,6 +104,14 @@ public abstract class GameModeBase : MonoBehaviour
             Debug.Log("[" + modeName + "] Estado: " + currentState + " -> " + newState);
 
         currentState = newState;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable();
+            props["GameState"] = (int)newState;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+        }
+
         OnStateChanged(newState);
 
         switch (newState)

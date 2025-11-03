@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 
-public class GameModeManager : MonoBehaviour, IMatchmakingCallbacks
+public class GameModeManager : MonoBehaviour, IMatchmakingCallbacks, IInRoomCallbacks
 {
     [Header("Game Mode Selection")]
     public GameModeType gameModeType = GameModeType.TeamDeathmatch;
@@ -181,6 +179,17 @@ public class GameModeManager : MonoBehaviour, IMatchmakingCallbacks
     public void OnJoinRoomFailed(short returnCode, string message) { }
     public void OnJoinRandomFailed(short returnCode, string message) { }
     public void OnLeftRoom() { }
+
+    void IInRoomCallbacks.OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    {
+        if (propertiesThatChanged.ContainsKey("GameState") && activeGameMode != null)
+        {
+            activeGameMode.SyncStateFromRoom();
+        }
+    }
+
+    void IInRoomCallbacks.OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps) { }
+    void IInRoomCallbacks.OnMasterClientSwitched(Player newMasterClient) { }
 }
 
 public enum GameModeType
