@@ -29,7 +29,6 @@ public class TeamManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        // Contar jugadores por equipo
         CountTeamPlayers();
     }
 
@@ -47,8 +46,6 @@ public class TeamManager : MonoBehaviourPunCallbacks
                 else if (team == "B") teamBPlayers++;
             }
         }
-
-        Debug.Log("Team A: " + teamAPlayers + " jugadores | Team B: " + teamBPlayers + " jugadores");
     }
 
     public void RegisterKill(string killerTeam)
@@ -58,15 +55,12 @@ public class TeamManager : MonoBehaviourPunCallbacks
         if (killerTeam == "A")
         {
             teamAKills++;
-            Debug.Log("Team A Kills: " + teamAKills);
         }
         else if (killerTeam == "B")
         {
             teamBKills++;
-            Debug.Log("Team B Kills: " + teamBKills);
         }
 
-        // Sincronizar kills
         Hashtable props = new Hashtable();
         props["TeamAKills"] = teamAKills;
         props["TeamBKills"] = teamBKills;
@@ -92,8 +86,6 @@ public class TeamManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void AnnounceWinner(string winnerTeam)
     {
-        Debug.Log("¡" + winnerTeam + " ha ganado!");
-        // Aquí puedes mostrar UI de victoria
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable props)

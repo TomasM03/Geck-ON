@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0, b: 0, a: 0.68235296}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -171,6 +171,7 @@ GameObject:
   - component: {fileID: 4990992355793141230}
   - component: {fileID: 3322476314115241219}
   - component: {fileID: 5580377884184144332}
+  - component: {fileID: 1354993737231492158}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -377,6 +378,24 @@ MonoBehaviour:
   healthText: {fileID: 298027254503722510}
   deathPanel: {fileID: 756825062319521037}
   respawnDelay: 3
+--- !u!114 &1354993737231492158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784921582958196558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af49ce568fe87ec4ca4fd49c4baba50f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teamAColor: {r: 0, g: 0, b: 1, a: 1}
+  teamBColor: {r: 1, g: 0, b: 0, a: 1}
+  localPlayerOutline: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  playerRenderer: {fileID: 257348987508556}
+  useOutlineForLocalPlayer: 1
+  materialIndex: 0
 --- !u!1 &3678612990323436981
 GameObject:
   m_ObjectHideFlags: 0
@@ -1183,7 +1202,6 @@ MonoBehaviour:
     m_Bits: 4294967295
   muzzleFlash: {fileID: 0}
   impactEffect: {fileID: 0}
-  showDebugRays: 1
 --- !u!1001 &8413442549044558522
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1290,4 +1308,3 @@ MonoBehaviour:
     m_Bits: 4294967295
   muzzleFlash: {fileID: 0}
   impactEffect: {fileID: 0}
-  showDebugRays: 1

@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
@@ -30,7 +29,6 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         joinTeamBButton.onClick.AddListener(() => JoinTeam("B"));
         startGameButton.onClick.AddListener(StartGame);
 
-        // SIEMPRE visible, pero solo interactuable si eres host Y hay jugadores
         if (startGameButton != null)
         {
             startGameButton.gameObject.SetActive(true);
@@ -38,38 +36,10 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         }
     }
 
-    void Update()
-    {
-        // Debug temporal - presiona F1 para ver info
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            Debug.Log("=== DEBUG LOBBY ===");
-            Debug.Log("IsMasterClient: " + PhotonNetwork.IsMasterClient);
-            Debug.Log("IsConnected: " + PhotonNetwork.IsConnected);
-            Debug.Log("InRoom: " + PhotonNetwork.InRoom);
-
-            if (PhotonNetwork.InRoom)
-            {
-                Debug.Log("PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
-
-                foreach (Player p in PhotonNetwork.PlayerList)
-                {
-                    string team = p.CustomProperties.ContainsKey("Team") ?
-                        (string)p.CustomProperties["Team"] : "SIN EQUIPO";
-                    Debug.Log("Player: " + p.NickName + " | Team: " + team + " | IsMaster: " + p.IsMasterClient);
-                }
-            }
-
-            Debug.Log("StartButton interactable: " + startGameButton.interactable);
-            Debug.Log("==================");
-        }
-    }
-
     public void OpenLobby()
     {
         lobbyPanel.SetActive(true);
         UpdateTeamDisplay();
-        Debug.Log("Lobby abierto");
     }
 
     void JoinTeam(string team)
@@ -80,9 +50,6 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         props["Team"] = team;
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
-        Debug.Log("Te uniste al Team " + team);
-
-        // Deshabilitar botones después de elegir
         joinTeamAButton.interactable = false;
         joinTeamBButton.interactable = false;
 
@@ -115,14 +82,10 @@ public class LobbyUI : MonoBehaviourPunCallbacks
             }
         }
 
-        // Actualizar textos
         teamAPlayersText.text = "Team A (" + teamACount + "):\n" + string.Join("\n", teamAPlayers);
         teamBPlayersText.text = "Team B (" + teamBCount + "):\n" + string.Join("\n", teamBPlayers);
 
-        // Actualizar estado del botón Start
         UpdateStartButton(teamACount, teamBCount);
-
-        Debug.Log("Teams - A: " + teamACount + " | B: " + teamBCount + " | Master: " + PhotonNetwork.IsMasterClient);
     }
 
     void UpdateStartButton(int teamACount, int teamBCount)
@@ -132,10 +95,8 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         bool isMaster = PhotonNetwork.IsMasterClient;
         bool teamsReady = (teamACount > 0 && teamBCount > 0);
 
-        // El botón es interactuable SOLO si eres host Y hay al menos 1 jugador en cada equipo
         startGameButton.interactable = isMaster && teamsReady;
 
-        // Cambiar el texto del botón según el estado
         TMP_Text buttonText = startGameButton.GetComponentInChildren<TMP_Text>();
         if (buttonText != null)
         {
@@ -155,19 +116,15 @@ public class LobbyUI : MonoBehaviourPunCallbacks
                 buttonText.color = Color.green;
             }
         }
-
-        Debug.Log("Botón Start actualizado - Interactuable: " + startGameButton.interactable);
     }
 
     void StartGame()
     {
         if (!PhotonNetwork.IsMasterClient)
         {
-            Debug.LogWarning("Solo el host puede iniciar la partida");
             return;
         }
 
-        // Verificar que hay jugadores en ambos equipos
         int teamACount = 0;
         int teamBCount = 0;
 
@@ -183,12 +140,7 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
         if (teamACount > 0 && teamBCount > 0)
         {
-            Debug.Log("Iniciando partida...");
             PhotonNetwork.LoadLevel(gameSceneName);
-        }
-        else
-        {
-            Debug.LogWarning("Se necesita al menos 1 jugador por equipo para iniciar");
         }
     }
 
@@ -196,26 +148,22 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     {
         if (changedProps.ContainsKey("Team"))
         {
-            Debug.Log(targetPlayer.NickName + " cambió de equipo");
             UpdateTeamDisplay();
         }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("Jugador entró: " + newPlayer.NickName);
         UpdateTeamDisplay();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        Debug.Log("Jugador salió: " + otherPlayer.NickName);
         UpdateTeamDisplay();
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        Debug.Log("Nuevo host: " + newMasterClient.NickName);
         UpdateTeamDisplay();
     }
 }

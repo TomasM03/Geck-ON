@@ -44,9 +44,6 @@ public class Health : MonoBehaviourPun
         if (isDead) return;
 
         currentHealth -= damage;
-
-        Debug.Log(photonView.Owner.NickName + " recibió " + damage + " de daño. HP: " + currentHealth);
-
         UpdateHealthUI();
 
         if (currentHealth <= 0)
@@ -58,10 +55,6 @@ public class Health : MonoBehaviourPun
     public void TakeDamage(float damage, PhotonView shooter)
     {
         int shooterID = shooter != null ? shooter.ViewID : -1;
-
-        Debug.Log("TakeDamage llamado en " + photonView.Owner.NickName + " | Daño: " + damage + " | De: " + (shooter != null ? shooter.Owner.NickName : "Desconocido"));
-
-        // Llamar el RPC para todos los clientes
         photonView.RPC("TakeDamageRPC", RpcTarget.All, damage, shooterID);
     }
 
@@ -71,7 +64,6 @@ public class Health : MonoBehaviourPun
 
         if (photonView.IsMine)
         {
-            // Registrar kill en el equipo del asesino
             if (killerViewID != -1)
             {
                 PhotonView killerView = PhotonView.Find(killerViewID);
@@ -81,24 +73,20 @@ public class Health : MonoBehaviourPun
 
                     if (TeamManager.Instance != null)
                     {
-                        TeamManager .Instance.RegisterKill(killerTeam);
+                        TeamManager.Instance.RegisterKill(killerTeam);
                     }
                 }
             }
 
-            // Desactivar controles
             if (playerController != null) playerController.enabled = false;
             if (playerCamera != null) playerCamera.UnlockCursor();
 
-            // Mostrar panel de muerte
             if (deathPanel != null) deathPanel.SetActive(true);
 
-            // Auto respawn
             Invoke("Respawn", respawnDelay);
         }
         else
         {
-            // Ocultar jugador muerto para otros
             gameObject.SetActive(false);
         }
     }
@@ -111,14 +99,11 @@ public class Health : MonoBehaviourPun
         currentHealth = maxHealth;
         UpdateHealthUI();
 
-        // Reactivar controles
         if (playerController != null) playerController.enabled = true;
         if (playerCamera != null) playerCamera.LockCursor();
 
-        // Ocultar panel
         if (deathPanel != null) deathPanel.SetActive(false);
 
-        // Mover a spawn
         NetworkManager netManager = FindObjectOfType<NetworkManager>();
         if (netManager != null)
         {
@@ -130,7 +115,6 @@ public class Health : MonoBehaviourPun
             transform.position = netManager.GetSpawnPosition(myTeam);
         }
 
-        // Notificar a otros que respawneó
         photonView.RPC("SyncRespawn", RpcTarget.Others);
     }
 
