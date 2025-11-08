@@ -1,208 +1,157 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Photon.Pun;
 using TMPro;
 
 public class Health : MonoBehaviourPun
 {
-    //Sets
+    [Header("Health")]
     public float maxHealth = 100f;
-    public bool isPlayer = false;
-    //DeadSets
-    public string mainMenuScene = "MainMenu";
-    public float deathDelay = 2f;
-    //Health
     private float currentHealth;
 
-    public TMP_Text healthTxt;
+    [Header("UI")]
+    public TMP_Text healthText;
+
+    [Header("Death")]
+    public GameObject deathPanel;
+    public float respawnDelay = 3f;
+
+    private PlayerController playerController;
+    private PlayerCamera playerCamera;
+    private bool isDead = false;
 
     void Start()
     {
         currentHealth = maxHealth;
-
-        if (!photonView.IsMine)
-        {
-            Canvas localCanvas = GetComponentInChildren<Canvas>();
-            if (localCanvas != null)
-                localCanvas.enabled = false;
-        }
+        playerController = GetComponent<PlayerController>();
+        playerCamera = GetComponentInChildren<PlayerCamera>();
 
         UpdateHealthUI();
-    }
 
-    //Actualizar UI
-    private void UpdateHealthUI()
-    {
-        healthTxt.text = "Health : " + currentHealth.ToString() + "%";
-
-        if (currentHealth <= 65)
+        if (!photonView.IsMine && healthText != null)
         {
-            healthTxt.color = Color.yellow;
-        }
-        else 
-        {
-            healthTxt.color = Color.green; 
+            healthText.gameObject.SetActive(false);
         }
 
-        if (currentHealth <= 35)
+        if (deathPanel != null)
         {
-            healthTxt.color = Color.red;
-        }
-
-        if (currentHealth <= 0)
-        {
-            healthTxt.text = "Health : 0%";
-        }
-    }
-
-    //DamageSyst
-    public void TakeDamage(float damage)
-    {
-        //Si es jugador
-        if (isPlayer)
-        {
-            if (!photonView.IsMine)
-            {
-                return;
-            }
-
-            currentHealth -= damage;
-
-
-            photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
-
-            if (currentHealth <= 0)
-            {
-                photonView.RPC("SyncDeath", RpcTarget.All);
-            }
-        }
-        else //Si es objeto
-        {
-            currentHealth -= damage;
-            if (currentHealth <= 0)
-            {
-                Destroy(gameObject);
-            }
+            deathPanel.SetActive(false);
         }
     }
 
     [PunRPC]
-    void ApplyDamage(float damage)
+    void TakeDamageRPC(float damage, int shooterID)
     {
+        if (isDead) return;
+
         currentHealth -= damage;
-        // Sincronizar HP
-        photonView.RPC("SyncHealth", RpcTarget.Others, currentHealth);
-        Debug.Log(currentHealth);
-
         UpdateHealthUI();
 
         if (currentHealth <= 0)
         {
-            photonView.RPC("SyncDeath", RpcTarget.All);
+            Die(shooterID);
         }
     }
 
-    [PunRPC]
-    void SyncHealth(float newHealth)
+    public void TakeDamage(float damage, PhotonView shooter)
     {
-        currentHealth = newHealth;
-    }
-
-    [PunRPC]
-    void SyncDeath()
-    {
-        Die();
-    }
-
-    //DiedVoid
-    void Die()
-    {
-        if (isPlayer)
+        if (photonView.IsMine)
         {
-            PhotonView pv = GetComponent<PhotonView>();
-            if (pv != null && pv.IsMine)
+            photonView.RPC("TakeDamageRPC", RpcTarget.All, damage, shooter != null ? shooter.ViewID : -1);
+        }
+    }
+
+    void Die(int killerViewID)
+    {
+        isDead = true;
+
+        if (photonView.IsMine)
+        {
+            // Registrar kill en el equipo del asesino
+            if (killerViewID != -1)
             {
-                Debug.Log("You Died");
-
-                if (GameModeManager.Instance != null)
+                PhotonView killerView = PhotonView.Find(killerViewID);
+                if (killerView != null && killerView.Owner.CustomProperties.ContainsKey("Team"))
                 {
-                    GameModeManager.Instance.NotifyPlayerKilled(pv, null);
+                    string killerTeam = (string)killerView.Owner.CustomProperties["Team"];
+
+                    if (TeamManager.Instance != null)
+                    {
+                        TeamManager.Instance.RegisterKill(killerTeam);
+                    }
                 }
-
-                PlayerController playerController = GetComponent<PlayerController>();
-                if (playerController != null)
-                {
-                    playerController.enabled = false;
-                }
-
-                PlayerCamera playerCam = GetComponentInChildren<PlayerCamera>();
-                if (playerCam != null)
-                {
-                    playerCam.UnlockCursor();
-                }
-
-                RespawnCanvas respawnCanvas = FindObjectOfType<RespawnCanvas>();
-                Debug.Log(respawnCanvas);
-                respawnCanvas.deathPanel.SetActive(true);
-
             }
-            else
-            {
-                Debug.Log("+1 Kill");
-                gameObject.SetActive(false);
-            }
+
+            // Desactivar controles
+            if (playerController != null) playerController.enabled = false;
+            if (playerCamera != null) playerCamera.UnlockCursor();
+
+            // Mostrar panel de muerte
+            if (deathPanel != null) deathPanel.SetActive(true);
+
+            // Auto respawn
+            Invoke("Respawn", respawnDelay);
         }
         else
         {
-            Destroy(gameObject);
+            // Ocultar jugador muerto para otros
+            gameObject.SetActive(false);
         }
     }
 
-    //RespawnVoid
-    public void Respawn()
+    void Respawn()
     {
         if (!photonView.IsMine) return;
 
+        isDead = false;
         currentHealth = maxHealth;
-
-        // Reactivar jugador
-        PlayerController playerController = GetComponent<PlayerController>();
-        if (playerController != null)
-        {
-            playerController.enabled = true;
-        }
-
-        PlayerCamera playerCam = GetComponentInChildren<PlayerCamera>();
-        if (playerCam != null)
-        {
-            playerCam.LockCursor();
-        }
-
-        // Mover a posición de spawn
-        NetworkManager networkManager = FindObjectOfType<NetworkManager>();
-        if (networkManager != null && networkManager.spawnPoint != null)
-        {
-            Vector3 spawnPos = networkManager.spawnPoint.position;
-            spawnPos += new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
-            transform.position = spawnPos;
-        }
-
-        photonView.RPC("SyncRespawn", RpcTarget.Others);
         UpdateHealthUI();
+
+        // Reactivar controles
+        if (playerController != null) playerController.enabled = true;
+        if (playerCamera != null) playerCamera.LockCursor();
+
+        // Ocultar panel
+        if (deathPanel != null) deathPanel.SetActive(false);
+
+        // Mover a spawn
+        NetworkManager netManager = FindObjectOfType<NetworkManager>();
+        if (netManager != null)
+        {
+            string myTeam = "";
+            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
+            {
+                myTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
+            }
+            transform.position = netManager.GetSpawnPosition(myTeam);
+        }
+
+        // Notificar a otros que respawneó
+        photonView.RPC("SyncRespawn", RpcTarget.Others);
     }
 
     [PunRPC]
     void SyncRespawn()
     {
         gameObject.SetActive(true);
-        currentHealth = maxHealth;
+        isDead = false;
     }
 
+    void UpdateHealthUI()
+    {
+        if (healthText != null && photonView.IsMine)
+        {
+            healthText.text = "HP: " + Mathf.CeilToInt(currentHealth) + "%";
 
-    //Percentage
-    public float GetHealthPercentage()
+            if (currentHealth > 65)
+                healthText.color = Color.green;
+            else if (currentHealth > 35)
+                healthText.color = Color.yellow;
+            else
+                healthText.color = Color.red;
+        }
+    }
+
+    public float GetHealthPercent()
     {
         return currentHealth / maxHealth;
     }
