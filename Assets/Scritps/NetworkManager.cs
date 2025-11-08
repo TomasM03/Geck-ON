@@ -29,13 +29,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
             else
             {
-                Debug.Log("Ya conectado a Photon");
+                Debug.Log("Ya conectado a Photon - Nickname actual: " + PhotonNetwork.NickName);
             }
         }
         // Si estamos en GameScene, verificar y spawnear
         else
         {
-            Debug.Log("Estamos en GameScene. IsConnected: " + PhotonNetwork.IsConnected + " | InRoom: " + PhotonNetwork.InRoom);
+            // IMPORTANTE: Verificar que el nickname esté correcto
+            if (GameManager.Instance != null)
+            {
+                string savedNick = GameManager.Instance.GetNickname();
+                if (!string.IsNullOrEmpty(savedNick) && PhotonNetwork.NickName != savedNick)
+                {
+                    Debug.LogWarning("Corrigiendo nickname en GameScene: " + savedNick);
+                    PhotonNetwork.NickName = savedNick;
+                }
+            }
+
+            Debug.Log("Estamos en GameScene. IsConnected: " + PhotonNetwork.IsConnected + " | InRoom: " + PhotonNetwork.InRoom + " | Nickname: " + PhotonNetwork.NickName);
 
             if (PhotonNetwork.IsConnectedAndReady && PhotonNetwork.InRoom && !hasSpawned)
             {
@@ -51,18 +62,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     void ConfigurePhoton()
     {
-        // Configurar nickname
+        // Configurar nickname ANTES de conectar
         if (GameManager.Instance != null)
         {
-            PhotonNetwork.NickName = GameManager.Instance.GetNickname();
+            string savedNick = GameManager.Instance.GetNickname();
+            if (!string.IsNullOrEmpty(savedNick))
+            {
+                PhotonNetwork.NickName = savedNick;
+                Debug.Log("Nickname cargado del GameManager: " + savedNick);
+            }
+            else
+            {
+                PhotonNetwork.NickName = "Player_" + Random.Range(1000, 9999);
+                Debug.LogWarning("No hay nickname guardado, usando aleatorio");
+            }
         }
         else
         {
             PhotonNetwork.NickName = "Player_" + Random.Range(1000, 9999);
+            Debug.LogError("GameManager no encontrado!");
         }
 
         PhotonNetwork.AutomaticallySyncScene = true;
-        Debug.Log("Photon configurado. Nickname: " + PhotonNetwork.NickName);
+        Debug.Log("Photon configurado con nickname: " + PhotonNetwork.NickName);
     }
 
     public override void OnConnectedToMaster()
