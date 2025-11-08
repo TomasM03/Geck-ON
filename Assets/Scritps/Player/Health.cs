@@ -44,6 +44,9 @@ public class Health : MonoBehaviourPun
         if (isDead) return;
 
         currentHealth -= damage;
+
+        Debug.Log(photonView.Owner.NickName + " recibió " + damage + " de daño. HP: " + currentHealth);
+
         UpdateHealthUI();
 
         if (currentHealth <= 0)
@@ -54,10 +57,12 @@ public class Health : MonoBehaviourPun
 
     public void TakeDamage(float damage, PhotonView shooter)
     {
-        if (photonView.IsMine)
-        {
-            photonView.RPC("TakeDamageRPC", RpcTarget.All, damage, shooter != null ? shooter.ViewID : -1);
-        }
+        int shooterID = shooter != null ? shooter.ViewID : -1;
+
+        Debug.Log("TakeDamage llamado en " + photonView.Owner.NickName + " | Daño: " + damage + " | De: " + (shooter != null ? shooter.Owner.NickName : "Desconocido"));
+
+        // Llamar el RPC para todos los clientes
+        photonView.RPC("TakeDamageRPC", RpcTarget.All, damage, shooterID);
     }
 
     void Die(int killerViewID)
@@ -76,7 +81,7 @@ public class Health : MonoBehaviourPun
 
                     if (TeamManager.Instance != null)
                     {
-                        TeamManager.Instance.RegisterKill(killerTeam);
+                        TeamManager .Instance.RegisterKill(killerTeam);
                     }
                 }
             }

@@ -2207,14 +2207,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 1784921582958196558, guid: 95848ba4e364b4e469cc2f188188a381, type: 3}
   teamASpawns:
   - {fileID: 1202912265}
-  - {fileID: 1202912265}
-  - {fileID: 1202912265}
-  - {fileID: 1202912265}
   teamBSpawns:
-  - {fileID: 1959468260}
-  - {fileID: 1959468260}
-  - {fileID: 1959468260}
-  - {fileID: 1959468260}
+  - {fileID: 1202912265}
 --- !u!1 &1063295057
 GameObject:
   m_ObjectHideFlags: 0
