@@ -175,8 +175,6 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.Disconnect();
         }
-
-        // NO cargar la escena aquí, se cargará en el callback
     }
 
     void OnDestroy()

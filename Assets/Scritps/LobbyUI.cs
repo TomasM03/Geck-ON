@@ -87,7 +87,6 @@ public class LobbyUI : MonoBehaviourPunCallbacks
             }
         }
 
-        // Actualizar los textos de UI
         if (teamAPlayersText != null)
         {
             teamAPlayersText.text = teamAPlayers + $"\n({teamACount} players)";
@@ -98,7 +97,6 @@ public class LobbyUI : MonoBehaviourPunCallbacks
             teamBPlayersText.text = teamBPlayers + $"\n({teamBCount} players)";
         }
 
-        // Actualizar botón de start game
         if (startGameButton != null)
         {
             bool canStart = PhotonNetwork.IsMasterClient && (teamACount > 0 && teamBCount > 0);

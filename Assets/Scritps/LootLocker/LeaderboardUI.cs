@@ -66,13 +66,11 @@ public class LeaderboardUI : MonoBehaviour
             return;
         }
 
-        // Limpiar entradas anteriores
         foreach (Transform child in leaderboardContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // Obtener leaderboard
         LootLockerManager.Instance.GetLeaderboard(maxEntries, OnLeaderboardLoaded);
     }
 
@@ -96,30 +94,29 @@ public class LeaderboardUI : MonoBehaviour
 
         GameObject entryObj = Instantiate(leaderboardEntryPrefab, leaderboardContainer);
 
-        // Buscar los textos en el prefab (ajusta según tu prefab)
         TMP_Text[] texts = entryObj.GetComponentsInChildren<TMP_Text>();
 
         if (texts.Length >= 3)
         {
-            texts[0].text = "#" + rank;                           // Posición
-            texts[1].text = member.player.name;                   // Nombre
-            texts[2].text = member.score.ToString() + " kills";   // Score
+            texts[0].text = "#" + rank;
+            texts[1].text = member.player.name;
+            texts[2].text = member.score.ToString() + " kills"; 
         }
 
-        // Colorear los primeros 3 lugares
         if (rank == 1)
         {
-            texts[0].color = new Color(1f, 0.84f, 0f); // Dorado
+            texts[0].color = Color.yellow;
         }
         else if (rank == 2)
         {
-            texts[0].color = new Color(0.75f, 0.75f, 0.75f); // Plateado
+            texts[0].color = Color.green;
         }
         else if (rank == 3)
         {
-            texts[0].color = new Color(0.8f, 0.5f, 0.2f); // Bronce
+            texts[0].color = Color.red;
         }
     }
+
     void TestSubmitScore()
     {
         if (LootLockerManager.Instance != null)
