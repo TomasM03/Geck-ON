@@ -102,6 +102,48 @@ public class TeamManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
 
         photonView.RPC("AnnounceWinner", RpcTarget.All, winnerTeam);
+
+        SubmitScoresToLeaderboard(winnerTeam);
+    }
+    void SubmitScoresToLeaderboard(string winnerTeam)
+    {
+        if (LootLockerManager.Instance == null) return;
+
+        // Determinar si el jugador local ganó
+        string myTeam = "";
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
+        {
+            myTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
+        }
+
+        bool didIWin = (myTeam == "A" && winnerTeam == "Team A") ||
+                       (myTeam == "B" && winnerTeam == "Team B");
+
+        // Calcular el score (puedes ajustar la fórmula)
+        int myScore = 0;
+        if (myTeam == "A")
+        {
+            myScore = teamAKills;
+        }
+        else if (myTeam == "B")
+        {
+            myScore = teamBKills;
+        }
+
+        // Bonus por ganar
+        if (didIWin)
+        {
+            myScore += 10; // 10 puntos bonus por victoria
+        }
+
+        // Enviar al leaderboard
+        LootLockerManager.Instance.SubmitScore(myScore, (success) =>
+        {
+            if (success)
+            {
+                Debug.Log($"Score enviado al leaderboard: {myScore}");
+            }
+        });
     }
 
     [PunRPC]

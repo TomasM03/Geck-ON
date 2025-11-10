@@ -13,7 +13,11 @@ public class MainMenuUI : MonoBehaviour
     public Button quiButton;
 
     [Header("UI - Lobby")]
-    public LobbyUI lobbyUI;
+    public LobbyUI lobbyUI; 
+    
+    [Header("Leaderboard")]
+    public Button leaderboardButton;
+    public LeaderboardUI leaderboardUI;
 
     void Start()
     {
@@ -21,6 +25,11 @@ public class MainMenuUI : MonoBehaviour
 
         confirmNicknameButton.onClick.AddListener(OnConfirmNickname);
         quiButton.onClick.AddListener(QuitGame);
+
+        if (leaderboardButton != null)
+        {
+            leaderboardButton.onClick.AddListener(OpenLeaderboard);
+        }
 
         if (GameManager.Instance != null)
         {
@@ -64,6 +73,13 @@ public class MainMenuUI : MonoBehaviour
         if (lobbyUI != null)
         {
             lobbyUI.OpenLobby();
+        }
+    }
+    void OpenLeaderboard()
+    {
+        if (leaderboardUI != null)
+        {
+            leaderboardUI.ShowLeaderboard();
         }
     }
 }
