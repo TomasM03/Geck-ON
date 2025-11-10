@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -38,7 +40,6 @@ public class MainMenuUI : MonoBehaviour
     void OnConfirmNickname()
     {
         string nick = nicknameInput.text.Trim();
-
         if (string.IsNullOrEmpty(nick))
         {
             return;
@@ -47,6 +48,15 @@ public class MainMenuUI : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.SetNickname(nick);
+        }
+
+        if (PhotonNetwork.IsConnected)
+        {
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.MaxPlayers = 10;
+            roomOptions.IsVisible = true;
+            roomOptions.IsOpen = true;
+            PhotonNetwork.JoinOrCreateRoom("GameRoom", roomOptions, TypedLobby.Default);
         }
 
         nicknamePanel.SetActive(false);

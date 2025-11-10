@@ -67,15 +67,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
-        {
-            RoomOptions roomOptions = new RoomOptions();
-            roomOptions.MaxPlayers = 10;
-            roomOptions.IsVisible = true;
-            roomOptions.IsOpen = true;
-
-            PhotonNetwork.JoinOrCreateRoom("GameRoom", roomOptions, TypedLobby.Default);
-        }
+        Debug.Log("Conectado al Master Server");
     }
 
     public override void OnJoinedRoom()

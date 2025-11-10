@@ -171,14 +171,12 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
     {
         Time.timeScale = 1f;
 
-        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.Disconnect();
         }
-        else
-        {
-            SceneManager.LoadScene(mainMenuScene);
-        }
+
+        // NO cargar la escena aquí, se cargará en el callback
     }
 
     void OnDestroy()
@@ -190,7 +188,7 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
             TeamManager.Instance.onMatchEnd -= HandleMatchEnd;
         }
     }
-    public override void OnLeftRoom()
+    public override void OnDisconnected(Photon.Realtime.DisconnectCause cause)
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(mainMenuScene);
