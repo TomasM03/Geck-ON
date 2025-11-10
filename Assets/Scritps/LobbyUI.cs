@@ -77,12 +77,12 @@ public class LobbyUI : MonoBehaviourPunCallbacks
                 if (team == "A")
                 {
                     teamACount++;
-                    teamAPlayers += playerName + "\n";  // Usa playerName en vez de player.NickName
+                    teamAPlayers += playerName + "\n";
                 }
                 else if (team == "B")
                 {
                     teamBCount++;
-                    teamBPlayers += playerName + "\n";  // Usa playerName en vez de player.NickName
+                    teamBPlayers += playerName + "\n";
                 }
             }
         }

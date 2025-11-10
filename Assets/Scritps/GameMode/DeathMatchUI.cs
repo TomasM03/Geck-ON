@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
+using ExitGames.Client.Photon;
 
 public class DeathMatchUI : MonoBehaviour
 {
@@ -117,6 +118,11 @@ public class DeathMatchUI : MonoBehaviour
 
         matchEnded = true;
 
+        Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         if (victoryPanel != null)
         {
             victoryPanel.SetActive(true);
@@ -163,6 +169,15 @@ public class DeathMatchUI : MonoBehaviour
 
     void ReturnToLobby()
     {
+        Time.timeScale = 1f;
+
+        if (PhotonNetwork.LocalPlayer != null)
+        {
+            Hashtable props = new Hashtable();
+            props["Team"] = null;
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        }
+
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.LeaveRoom();
@@ -173,6 +188,8 @@ public class DeathMatchUI : MonoBehaviour
 
     void OnDestroy()
     {
+        Time.timeScale = 1f;
+
         if (TeamManager.Instance != null)
         {
             TeamManager.Instance.onMatchEnd -= HandleMatchEnd;
