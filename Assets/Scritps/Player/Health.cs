@@ -15,6 +15,9 @@ public class Health : MonoBehaviourPun
     public GameObject deathPanel;
     public float respawnDelay = 3f;
 
+    [Header("Visual (Optional)")]
+    public GameObject visualModel;
+
     private PlayerController playerController;
     private PlayerCamera playerCamera;
     private bool isDead = false;
@@ -60,6 +63,8 @@ public class Health : MonoBehaviourPun
 
     void Die(int killerViewID)
     {
+        if (isDead) return;
+
         isDead = true;
 
         if (photonView.IsMine)
@@ -70,8 +75,14 @@ public class Health : MonoBehaviourPun
                 if (killerView != null && killerView.Owner.CustomProperties.ContainsKey("Team"))
                 {
                     string killerTeam = (string)killerView.Owner.CustomProperties["Team"];
+                    string myTeam = "";
 
-                    if (TeamManager.Instance != null)
+                    if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
+                    {
+                        myTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
+                    }
+
+                    if (killerTeam != myTeam && TeamManager.Instance != null)
                     {
                         TeamManager.Instance.RegisterKill(killerTeam);
                     }
@@ -80,14 +91,28 @@ public class Health : MonoBehaviourPun
 
             if (playerController != null) playerController.enabled = false;
             if (playerCamera != null) playerCamera.UnlockCursor();
-
             if (deathPanel != null) deathPanel.SetActive(true);
 
             Invoke("Respawn", respawnDelay);
         }
+
+        photonView.RPC("HidePlayer", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void HidePlayer()
+    {
+        if (visualModel != null)
+        {
+            visualModel.SetActive(false);
+        }
         else
         {
-            gameObject.SetActive(false);
+            Renderer[] renderers = GetComponentsInChildren<Renderer>();
+            foreach (Renderer rend in renderers)
+            {
+                if (rend != null) rend.enabled = false;
+            }
         }
     }
 
@@ -101,7 +126,6 @@ public class Health : MonoBehaviourPun
 
         if (playerController != null) playerController.enabled = true;
         if (playerCamera != null) playerCamera.LockCursor();
-
         if (deathPanel != null) deathPanel.SetActive(false);
 
         NetworkManager netManager = FindObjectOfType<NetworkManager>();
@@ -115,14 +139,24 @@ public class Health : MonoBehaviourPun
             transform.position = netManager.GetSpawnPosition(myTeam);
         }
 
-        photonView.RPC("SyncRespawn", RpcTarget.Others);
+        photonView.RPC("ShowPlayer", RpcTarget.All);
     }
 
     [PunRPC]
-    void SyncRespawn()
+    void ShowPlayer()
     {
-        gameObject.SetActive(true);
-        isDead = false;
+        if (visualModel != null)
+        {
+            visualModel.SetActive(true);
+        }
+        else
+        {
+            Renderer[] renderers = GetComponentsInChildren<Renderer>();
+            foreach (Renderer rend in renderers)
+            {
+                if (rend != null) rend.enabled = true;
+            }
+        }
     }
 
     void UpdateHealthUI()

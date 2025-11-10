@@ -378,6 +378,7 @@ MonoBehaviour:
   healthText: {fileID: 298027254503722510}
   deathPanel: {fileID: 756825062319521037}
   respawnDelay: 3
+  visualModel: {fileID: 0}
 --- !u!114 &1354993737231492158
 MonoBehaviour:
   m_ObjectHideFlags: 0

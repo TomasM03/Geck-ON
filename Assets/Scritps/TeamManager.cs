@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
+using System;
 
 public class TeamManager : MonoBehaviourPunCallbacks
 {
@@ -14,6 +15,10 @@ public class TeamManager : MonoBehaviourPunCallbacks
     private int teamBKills = 0;
     private int teamAPlayers = 0;
     private int teamBPlayers = 0;
+    private bool matchEnded = false;
+
+    public event Action<string> onMatchEnd;
+    public event Action<string, int> onKillRegistered;
 
     void Awake()
     {
@@ -30,6 +35,7 @@ public class TeamManager : MonoBehaviourPunCallbacks
     void Start()
     {
         CountTeamPlayers();
+        ResetMatch();
     }
 
     void CountTeamPlayers()
@@ -48,9 +54,25 @@ public class TeamManager : MonoBehaviourPunCallbacks
         }
     }
 
+    void ResetMatch()
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        teamAKills = 0;
+        teamBKills = 0;
+        matchEnded = false;
+
+        Hashtable props = new Hashtable();
+        props["TeamAKills"] = 0;
+        props["TeamBKills"] = 0;
+        props["MatchEnded"] = false;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+    }
+
     public void RegisterKill(string killerTeam)
     {
         if (!PhotonNetwork.IsMasterClient) return;
+        if (matchEnded) return;
 
         if (killerTeam == "A")
         {
@@ -66,26 +88,45 @@ public class TeamManager : MonoBehaviourPunCallbacks
         props["TeamBKills"] = teamBKills;
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
 
+        onKillRegistered?.Invoke(killerTeam, killerTeam == "A" ? teamAKills : teamBKills);
+
         CheckWinCondition();
     }
 
     void CheckWinCondition()
     {
+        if (matchEnded) return;
+
         int targetKills = Mathf.Max(teamAPlayers, teamBPlayers) * killsPerPlayer;
 
         if (teamAKills >= targetKills)
         {
-            photonView.RPC("AnnounceWinner", RpcTarget.All, "Team A");
+            EndMatch("Team A");
         }
         else if (teamBKills >= targetKills)
         {
-            photonView.RPC("AnnounceWinner", RpcTarget.All, "Team B");
+            EndMatch("Team B");
         }
+    }
+
+    void EndMatch(string winnerTeam)
+    {
+        if (matchEnded) return;
+
+        matchEnded = true;
+
+        Hashtable props = new Hashtable();
+        props["MatchEnded"] = true;
+        props["WinnerTeam"] = winnerTeam;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+
+        photonView.RPC("AnnounceWinner", RpcTarget.All, winnerTeam);
     }
 
     [PunRPC]
     void AnnounceWinner(string winnerTeam)
     {
+        onMatchEnd?.Invoke(winnerTeam);
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable props)
@@ -98,6 +139,20 @@ public class TeamManager : MonoBehaviourPunCallbacks
         {
             teamBKills = (int)props["TeamBKills"];
         }
+        if (props.ContainsKey("MatchEnded"))
+        {
+            matchEnded = (bool)props["MatchEnded"];
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        CountTeamPlayers();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        CountTeamPlayers();
     }
 
     public string GetPlayerTeam(Player player)
@@ -112,4 +167,7 @@ public class TeamManager : MonoBehaviourPunCallbacks
     public int GetTeamAKills() { return teamAKills; }
     public int GetTeamBKills() { return teamBKills; }
     public int GetTargetKills() { return Mathf.Max(teamAPlayers, teamBPlayers) * killsPerPlayer; }
+    public bool IsMatchEnded() { return matchEnded; }
+    public int GetTeamAPlayers() { return teamAPlayers; }
+    public int GetTeamBPlayers() { return teamBPlayers; }
 }
