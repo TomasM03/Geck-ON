@@ -172,6 +172,7 @@ GameObject:
   - component: {fileID: 3322476314115241219}
   - component: {fileID: 5580377884184144332}
   - component: {fileID: 1354993737231492158}
+  - component: {fileID: 5357746776864692074}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -397,6 +398,30 @@ MonoBehaviour:
   playerRenderer: {fileID: 257348987508556}
   useOutlineForLocalPlayer: 1
   materialIndex: 0
+--- !u!114 &5357746776864692074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784921582958196558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 999fdb117a7547d4dab7e35658533b26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pistol: {fileID: 8648007213873891307}
+  shotgun: {fileID: 2167379309393327262}
+  pistolDamage: 25
+  pistolFireRate: 0.15
+  pistolRange: 100
+  pistolBulletsPerShot: 1
+  pistolSpread: 0.5
+  shotgunDamage: 15
+  shotgunFireRate: 0.8
+  shotgunRange: 30
+  shotgunBulletsPerShot: 8
+  shotgunSpread: 5
 --- !u!1 &3678612990323436981
 GameObject:
   m_ObjectHideFlags: 0
