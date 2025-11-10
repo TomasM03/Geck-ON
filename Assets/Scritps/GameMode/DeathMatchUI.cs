@@ -5,7 +5,7 @@ using Photon.Pun;
 using UnityEngine.SceneManagement;
 using ExitGames.Client.Photon;
 
-public class DeathMatchUI : MonoBehaviour
+public class DeathMatchUI : MonoBehaviourPunCallbacks
 {
     [Header("Score Display")]
     public TMP_Text teamAScoreText;
@@ -23,7 +23,7 @@ public class DeathMatchUI : MonoBehaviour
     public TMP_Text playerCountText;
 
     [Header("Settings")]
-    public string lobbySceneName = "MainMenu";
+    public string mainMenuScene = "MainMenu";
     public float autoReturnDelay = 10f;
 
     private bool matchEnded = false;
@@ -171,19 +171,14 @@ public class DeathMatchUI : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        if (PhotonNetwork.LocalPlayer != null)
-        {
-            Hashtable props = new Hashtable();
-            props["Team"] = null;
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-        }
-
-        if (PhotonNetwork.IsConnected)
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
         {
             PhotonNetwork.LeaveRoom();
         }
-
-        SceneManager.LoadScene(lobbySceneName);
+        else
+        {
+            SceneManager.LoadScene(mainMenuScene);
+        }
     }
 
     void OnDestroy()
@@ -194,5 +189,10 @@ public class DeathMatchUI : MonoBehaviour
         {
             TeamManager.Instance.onMatchEnd -= HandleMatchEnd;
         }
+    }
+    public override void OnLeftRoom()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(mainMenuScene);
     }
 }
