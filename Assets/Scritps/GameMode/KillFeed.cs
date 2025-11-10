@@ -1,9 +1,8 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
-using Photon.Pun;
 
-public class KillFeed : MonoBehaviourPun
+public class KillFeed : MonoBehaviour
 {
     [Header("UI References")]
     public Transform feedContainer;
@@ -30,7 +29,6 @@ public class KillFeed : MonoBehaviourPun
         ShowKillNotification(killerTeam, totalKills);
     }
 
-    [PunRPC]
     void ShowKillNotification(string killerTeam, int totalKills)
     {
         if (killFeedItemPrefab == null || feedContainer == null) return;

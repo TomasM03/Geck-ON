@@ -2,28 +2,24 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 
-public class PlayerNameDisplay : MonoBehaviour
+public class PlayerNameDisplay : MonoBehaviourPun
 {
     public GameObject prefabName;
     public Vector3 offsetPosicion = new Vector3(0, 2f, 0);
-    public bool cameraView = true;
 
     public Color localPlayerColor = Color.green;
-    public Color otherPlayerColor = Color.white;
+    public Color teamAColor = new Color(0.3f, 0.6f, 1f);
+    public Color teamBColor = new Color(1f, 0.3f, 0.3f);
 
-    private PhotonView pv;
     private GameObject nameUI;
     private TextMeshPro nameText;
-    private Camera mainCam;
 
     void Start()
     {
-        pv = GetComponent<PhotonView>();
-        mainCam = Camera.main;
-        CreateName();
+        Invoke("CreateNameDelayed", 0.5f);
     }
 
-    void CreateName()
+    void CreateNameDelayed()
     {
         if (prefabName == null)
         {
@@ -46,7 +42,7 @@ public class PlayerNameDisplay : MonoBehaviour
         nameUI = new GameObject("PlayerName");
         nameUI.transform.SetParent(transform);
         nameUI.transform.localPosition = offsetPosicion;
-            
+
         nameText = nameUI.AddComponent<TextMeshPro>();
         nameText.text = "Name";
         nameText.fontSize = 3;
@@ -56,22 +52,32 @@ public class PlayerNameDisplay : MonoBehaviour
 
     void NameSet()
     {
-        if (pv != null && nameText != null)
+        if (photonView != null && nameText != null)
         {
-            nameText.text = pv.Owner.NickName;
+            nameText.text = photonView.Owner.NickName;
 
-            if (pv.IsMine)
+            if (photonView.IsMine)
             {
                 nameText.color = localPlayerColor;
                 nameText.text = nameText.text + " (YOU)";
-            }   
+            }
             else
             {
-                nameText.color = otherPlayerColor;
+                string team = "";
+                if (photonView.Owner.CustomProperties.ContainsKey("Team"))
+                {
+                    team = (string)photonView.Owner.CustomProperties["Team"];
+                }
+
+                if (team == "A")
+                    nameText.color = teamAColor;
+                else if (team == "B")
+                    nameText.color = teamBColor;
+                else
+                    nameText.color = Color.white;
             }
 
             nameUI.transform.localPosition = offsetPosicion;
         }
     }
-
 }

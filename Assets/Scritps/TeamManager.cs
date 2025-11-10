@@ -77,10 +77,12 @@ public class TeamManager : MonoBehaviourPunCallbacks
         if (killerTeam == "A")
         {
             teamAKills++;
+            Debug.Log("TeamAKill");
         }
         else if (killerTeam == "B")
         {
             teamBKills++;
+            Debug.Log("TeamBKill");
         }
 
         Hashtable props = new Hashtable();
@@ -88,7 +90,8 @@ public class TeamManager : MonoBehaviourPunCallbacks
         props["TeamBKills"] = teamBKills;
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
 
-        onKillRegistered?.Invoke(killerTeam, killerTeam == "A" ? teamAKills : teamBKills);
+        int currentKills = killerTeam == "A" ? teamAKills : teamBKills;
+        onKillRegistered?.Invoke(killerTeam, currentKills);
 
         CheckWinCondition();
     }
@@ -120,28 +123,60 @@ public class TeamManager : MonoBehaviourPunCallbacks
         props["WinnerTeam"] = winnerTeam;
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
 
-        photonView.RPC("AnnounceWinner", RpcTarget.All, winnerTeam);
+        if (GetComponent<PhotonView>() != null)
+        {
+            GetComponent<PhotonView>().RPC("AnnounceWinner", RpcTarget.All, winnerTeam);
+        }
+        else
+        {
+            onMatchEnd?.Invoke(winnerTeam);
+        }
     }
 
     [PunRPC]
     void AnnounceWinner(string winnerTeam)
     {
+        matchEnded = true;
         onMatchEnd?.Invoke(winnerTeam);
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable props)
     {
+        bool updated = false;
+
         if (props.ContainsKey("TeamAKills"))
         {
-            teamAKills = (int)props["TeamAKills"];
+            int newKills = (int)props["TeamAKills"];
+            if (newKills != teamAKills)
+            {
+                teamAKills = newKills;
+                updated = true;
+            }
         }
+
         if (props.ContainsKey("TeamBKills"))
         {
-            teamBKills = (int)props["TeamBKills"];
+            int newKills = (int)props["TeamBKills"];
+            if (newKills != teamBKills)
+            {
+                teamBKills = newKills;
+                updated = true;
+            }
         }
+
         if (props.ContainsKey("MatchEnded"))
         {
-            matchEnded = (bool)props["MatchEnded"];
+            bool ended = (bool)props["MatchEnded"];
+            if (ended && !matchEnded)
+            {
+                matchEnded = true;
+
+                if (props.ContainsKey("WinnerTeam"))
+                {
+                    string winner = (string)props["WinnerTeam"];
+                    onMatchEnd?.Invoke(winner);
+                }
+            }
         }
     }
 
