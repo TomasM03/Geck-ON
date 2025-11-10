@@ -71,29 +71,7 @@ public class TeamManager : MonoBehaviourPunCallbacks
 
     public void RegisterKill(string killerTeam)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
-        if (matchEnded) return;
-
-        if (killerTeam == "A")
-        {
-            teamAKills++;
-            Debug.Log("TeamAKill");
-        }
-        else if (killerTeam == "B")
-        {
-            teamBKills++;
-            Debug.Log("TeamBKill");
-        }
-
-        Hashtable props = new Hashtable();
-        props["TeamAKills"] = teamAKills;
-        props["TeamBKills"] = teamBKills;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
-
-        int currentKills = killerTeam == "A" ? teamAKills : teamBKills;
-        onKillRegistered?.Invoke(killerTeam, currentKills);
-
-        CheckWinCondition();
+        photonView.RPC("RegisterKillRPC", RpcTarget.MasterClient, killerTeam);
     }
 
     void CheckWinCondition()
@@ -123,60 +101,28 @@ public class TeamManager : MonoBehaviourPunCallbacks
         props["WinnerTeam"] = winnerTeam;
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
 
-        if (GetComponent<PhotonView>() != null)
-        {
-            GetComponent<PhotonView>().RPC("AnnounceWinner", RpcTarget.All, winnerTeam);
-        }
-        else
-        {
-            onMatchEnd?.Invoke(winnerTeam);
-        }
+        photonView.RPC("AnnounceWinner", RpcTarget.All, winnerTeam);
     }
 
     [PunRPC]
     void AnnounceWinner(string winnerTeam)
     {
-        matchEnded = true;
         onMatchEnd?.Invoke(winnerTeam);
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable props)
     {
-        bool updated = false;
-
         if (props.ContainsKey("TeamAKills"))
         {
-            int newKills = (int)props["TeamAKills"];
-            if (newKills != teamAKills)
-            {
-                teamAKills = newKills;
-                updated = true;
-            }
+            teamAKills = (int)props["TeamAKills"];
         }
-
         if (props.ContainsKey("TeamBKills"))
         {
-            int newKills = (int)props["TeamBKills"];
-            if (newKills != teamBKills)
-            {
-                teamBKills = newKills;
-                updated = true;
-            }
+            teamBKills = (int)props["TeamBKills"];
         }
-
         if (props.ContainsKey("MatchEnded"))
         {
-            bool ended = (bool)props["MatchEnded"];
-            if (ended && !matchEnded)
-            {
-                matchEnded = true;
-
-                if (props.ContainsKey("WinnerTeam"))
-                {
-                    string winner = (string)props["WinnerTeam"];
-                    onMatchEnd?.Invoke(winner);
-                }
-            }
+            matchEnded = (bool)props["MatchEnded"];
         }
     }
 
@@ -197,6 +143,31 @@ public class TeamManager : MonoBehaviourPunCallbacks
             return (string)player.CustomProperties["Team"];
         }
         return "";
+    }
+
+    [PunRPC]
+    void RegisterKillRPC(string killerTeam)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (matchEnded) return;
+
+        if (killerTeam == "A")
+        {
+            teamAKills++;
+        }
+        else if (killerTeam == "B")
+        {
+            teamBKills++;
+        }
+
+        Hashtable props = new Hashtable();
+        props["TeamAKills"] = teamAKills;
+        props["TeamBKills"] = teamBKills;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+
+        onKillRegistered?.Invoke(killerTeam, killerTeam == "A" ? teamAKills : teamBKills);
+
+        CheckWinCondition();
     }
 
     public int GetTeamAKills() { return teamAKills; }

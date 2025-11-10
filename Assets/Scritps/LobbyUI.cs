@@ -61,31 +61,49 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         int teamACount = 0;
         int teamBCount = 0;
 
-        List<string> teamAPlayers = new List<string>();
-        List<string> teamBPlayers = new List<string>();
+        string teamAPlayers = "TEAM A:\n";
+        string teamBPlayers = "TEAM B:\n";
 
         foreach (Player player in PhotonNetwork.PlayerList)
         {
+            string playerName = string.IsNullOrEmpty(player.NickName)
+                ? $"Player_{player.ActorNumber}"
+                : player.NickName;
+
             if (player.CustomProperties.ContainsKey("Team"))
             {
                 string team = (string)player.CustomProperties["Team"];
+
                 if (team == "A")
                 {
                     teamACount++;
-                    teamAPlayers.Add(player.NickName);
+                    teamAPlayers += playerName + "\n";  // Usa playerName en vez de player.NickName
                 }
                 else if (team == "B")
                 {
                     teamBCount++;
-                    teamBPlayers.Add(player.NickName);
+                    teamBPlayers += playerName + "\n";  // Usa playerName en vez de player.NickName
                 }
             }
         }
 
-        teamAPlayersText.text = "Team A (" + teamACount + "):\n" + string.Join("\n", teamAPlayers);
-        teamBPlayersText.text = "Team B (" + teamBCount + "):\n" + string.Join("\n", teamBPlayers);
+        // Actualizar los textos de UI
+        if (teamAPlayersText != null)
+        {
+            teamAPlayersText.text = teamAPlayers + $"\n({teamACount} players)";
+        }
 
-        UpdateStartButton(teamACount, teamBCount);
+        if (teamBPlayersText != null)
+        {
+            teamBPlayersText.text = teamBPlayers + $"\n({teamBCount} players)";
+        }
+
+        // Actualizar botón de start game
+        if (startGameButton != null)
+        {
+            bool canStart = PhotonNetwork.IsMasterClient && (teamACount > 0 && teamBCount > 0);
+            startGameButton.interactable = canStart;
+        }
     }
 
     void UpdateStartButton(int teamACount, int teamBCount)
@@ -154,7 +172,7 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        UpdateTeamDisplay();
+        Invoke("UpdateTeamDisplay", 0.5f);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)

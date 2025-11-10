@@ -84,8 +84,7 @@ public class Health : MonoBehaviourPun
 
                     if (killerTeam != myTeam && TeamManager.Instance != null)
                     {
-                        string teamNameFormatted = killerTeam == "A" ? "Team A" : "Team B";
-                        TeamManager.Instance.RegisterKill(teamNameFormatted);
+                        TeamManager.Instance.RegisterKill(killerTeam);
                     }
                 }
             }
