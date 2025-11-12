@@ -129,7 +129,6 @@ public class LeaderboardUI : MonoBehaviour
                 if (success)
                 {
                     Debug.Log(" Score de prueba enviado correctamente");
-                    // Esperar un poco y refrescar
                     Invoke("RefreshLeaderboard", 1f);
                 }
             });

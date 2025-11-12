@@ -39,7 +39,6 @@ public class LootLockerManager : MonoBehaviour
                 playerID = response.player_id.ToString();
                 isInitialized = true;
 
-                // Setear el nombre del jugador
                 if (GameManager.Instance != null)
                 {
                     SetPlayerName(GameManager.Instance.GetNickname());

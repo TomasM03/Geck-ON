@@ -109,7 +109,6 @@ public class TeamManager : MonoBehaviourPunCallbacks
     {
         if (LootLockerManager.Instance == null) return;
 
-        // Determinar si el jugador local ganó
         string myTeam = "";
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
         {
@@ -119,7 +118,6 @@ public class TeamManager : MonoBehaviourPunCallbacks
         bool didIWin = (myTeam == "A" && winnerTeam == "Team A") ||
                        (myTeam == "B" && winnerTeam == "Team B");
 
-        // Calcular el score (puedes ajustar la fórmula)
         int myScore = 0;
         if (myTeam == "A")
         {
@@ -130,13 +128,11 @@ public class TeamManager : MonoBehaviourPunCallbacks
             myScore = teamBKills;
         }
 
-        // Bonus por ganar
         if (didIWin)
         {
-            myScore += 10; // 10 puntos bonus por victoria
+            myScore += 10;
         }
 
-        // Enviar al leaderboard
         LootLockerManager.Instance.SubmitScore(myScore, (success) =>
         {
             if (success)
