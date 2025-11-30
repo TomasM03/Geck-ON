@@ -18,7 +18,33 @@ public class Weapon : MonoBehaviourPun
     public ParticleSystem muzzleFlash;
     public GameObject impactEffect;
 
+    [Header("Audio")]
+    public AudioClip shootSound;
+    public AudioSource audioSource;
+
     private float nextFireTime = 0f;
+    private Camera mainCamera;
+
+    void Start()
+    {
+        if (photonView.IsMine)
+        {
+            mainCamera = GetComponentInParent<PlayerCamera>()?.mainCam;
+            if (mainCamera == null)
+            {
+                mainCamera = Camera.main;
+            }
+
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+                if (audioSource == null)
+                {
+                    audioSource = gameObject.AddComponent<AudioSource>();
+                }
+            }
+        }
+    }
 
     void Update()
     {
@@ -40,15 +66,45 @@ public class Weapon : MonoBehaviourPun
             muzzleFlash.Play();
         }
 
+        if (shootSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(shootSound);
+        }
+
+        photonView.RPC("PlayShootEffectsRPC", RpcTarget.Others);
+
         for (int i = 0; i < bulletsPerShot; i++)
         {
             FireRaycast();
         }
     }
 
+    [PunRPC]
+    void PlayShootEffectsRPC()
+    {
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Play();
+        }
+        if (shootSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(shootSound);
+        }
+    }
+
     void FireRaycast()
     {
-        Vector3 direction = firePoint.forward;
+        Ray ray;
+        if (mainCamera != null)
+        {
+            ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        }
+        else
+        {
+            ray = new Ray(firePoint.position, firePoint.forward);
+        }
+
+        Vector3 direction = ray.direction;
 
         if (spread > 0)
         {
@@ -61,10 +117,9 @@ public class Weapon : MonoBehaviourPun
         }
 
         RaycastHit hit;
-        if (Physics.Raycast(firePoint.position, direction, out hit, range, hitLayers))
+        if (Physics.Raycast(ray.origin, direction, out hit, range, hitLayers))
         {
             Health targetHealth = hit.collider.GetComponent<Health>();
-
             if (targetHealth == null)
             {
                 targetHealth = hit.collider.GetComponentInParent<Health>();
@@ -94,6 +149,11 @@ public class Weapon : MonoBehaviourPun
                     if (myTeam == targetTeam && !string.IsNullOrEmpty(myTeam)) return;
 
                     targetHealth.TakeDamage(damage, photonView);
+
+                    if (CrosshairSystem.Instance != null)
+                    {
+                        CrosshairSystem.Instance.ShowHitmarker();
+                    }
                 }
             }
 
@@ -102,6 +162,15 @@ public class Weapon : MonoBehaviourPun
                 GameObject impact = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
                 Destroy(impact, 2f);
             }
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (firePoint != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(firePoint.position, firePoint.position + firePoint.forward * range);
         }
     }
 }
