@@ -3198,7 +3198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3291fb2b0dc4ef41b42d0e731116e3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 1784921582958196558, guid: 95848ba4e364b4e469cc2f188188a381, type: 3}
+  playerPrefab: {fileID: 4514348743468397513, guid: 95848ba4e364b4e469cc2f188188a381, type: 3}
   teamASpawns:
   - {fileID: 1202912265}
   teamBSpawns:
@@ -4204,9 +4204,6 @@ MonoBehaviour:
   buttonInactiveColor: {r: 1, g: 0, b: 0, a: 1}
   buttonActiveColor: {r: 0, g: 1, b: 0, a: 1}
   buttonWaitingColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  doorOpenSound: {fileID: 0}
-  buttonPressSound: {fileID: 0}
-  buttonReleaseSound: {fileID: 0}
 --- !u!4 &1355700946
 Transform:
   m_ObjectHideFlags: 0
@@ -5786,7 +5783,7 @@ GameObject:
   - component: {fileID: 1938862612}
   - component: {fileID: 1938862611}
   - component: {fileID: 1938862610}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -13,6 +13,9 @@ public class Health : MonoBehaviourPun
 
     [Header("Death")]
     public GameObject deathPanel;
+    [Tooltip("Tiempo hasta que aparece la pantalla de muerte")]
+    public float deathScreenDelay = 2f;
+    [Tooltip("Tiempo hasta respawn después de la pantalla de muerte")]
     public float respawnDelay = 3f;
 
     [Header("Visual (Optional)")]
@@ -20,6 +23,7 @@ public class Health : MonoBehaviourPun
 
     private PlayerController playerController;
     private PlayerCamera playerCamera;
+    private Animator animator;
     private bool isDead = false;
 
     void Start()
@@ -27,6 +31,7 @@ public class Health : MonoBehaviourPun
         currentHealth = maxHealth;
         playerController = GetComponent<PlayerController>();
         playerCamera = GetComponentInChildren<PlayerCamera>();
+        animator = GetComponentInChildren<Animator>();
 
         UpdateHealthUI();
 
@@ -67,8 +72,12 @@ public class Health : MonoBehaviourPun
 
         isDead = true;
 
+        // Activar animación de muerte en todos los clientes inmediatamente
+        photonView.RPC("PlayDeathAnimationRPC", RpcTarget.All);
+
         if (photonView.IsMine)
         {
+            // Registrar kill
             if (killerViewID != -1)
             {
                 PhotonView killerView = PhotonView.Find(killerViewID);
@@ -90,30 +99,30 @@ public class Health : MonoBehaviourPun
             }
 
             if (playerController != null) playerController.enabled = false;
-            if (playerCamera != null) playerCamera.UnlockCursor();
-            if (deathPanel != null) deathPanel.SetActive(true);
 
-            Invoke("Respawn", respawnDelay);
+            Invoke("ShowDeathScreen", deathScreenDelay);
+
+            Invoke("Respawn", deathScreenDelay + respawnDelay);
         }
-
-        photonView.RPC("HidePlayer", RpcTarget.All);
     }
 
     [PunRPC]
-    void HidePlayer()
+    void PlayDeathAnimationRPC()
     {
-        if (visualModel != null)
+        if (animator != null)
         {
-            visualModel.SetActive(false);
+            animator.Play("Death");
+            animator.SetBool("IsDead", true);
         }
-        else
-        {
-            Renderer[] renderers = GetComponentsInChildren<Renderer>();
-            foreach (Renderer rend in renderers)
-            {
-                if (rend != null) rend.enabled = false;
-            }
-        }
+    }
+
+    void ShowDeathScreen()
+    {
+        if (!photonView.IsMine) return;
+
+        if (deathPanel != null) deathPanel.SetActive(true);
+
+        if (playerCamera != null) playerCamera.UnlockCursor();
     }
 
     void Respawn()
@@ -123,10 +132,6 @@ public class Health : MonoBehaviourPun
         isDead = false;
         currentHealth = maxHealth;
         UpdateHealthUI();
-
-        if (playerController != null) playerController.enabled = true;
-        if (playerCamera != null) playerCamera.LockCursor();
-        if (deathPanel != null) deathPanel.SetActive(false);
 
         NetworkManager netManager = FindObjectOfType<NetworkManager>();
         if (netManager != null)
@@ -139,23 +144,20 @@ public class Health : MonoBehaviourPun
             transform.position = netManager.GetSpawnPosition(myTeam);
         }
 
-        photonView.RPC("ShowPlayer", RpcTarget.All);
+        photonView.RPC("ResetToIdleRPC", RpcTarget.All);
+
+        if (playerController != null) playerController.enabled = true;
+        if (playerCamera != null) playerCamera.LockCursor();
+        if (deathPanel != null) deathPanel.SetActive(false);
     }
 
     [PunRPC]
-    void ShowPlayer()
+    void ResetToIdleRPC()
     {
-        if (visualModel != null)
+        if (animator != null)
         {
-            visualModel.SetActive(true);
-        }
-        else
-        {
-            Renderer[] renderers = GetComponentsInChildren<Renderer>();
-            foreach (Renderer rend in renderers)
-            {
-                if (rend != null) rend.enabled = true;
-            }
+            animator.Play("Idle", 0, 0f);
+            animator.SetBool("IsDead", false);
         }
     }
 
@@ -177,5 +179,10 @@ public class Health : MonoBehaviourPun
     public float GetHealthPercent()
     {
         return currentHealth / maxHealth;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 }

@@ -18,10 +18,6 @@ public class Weapon : MonoBehaviourPun
     public ParticleSystem muzzleFlash;
     public GameObject impactEffect;
 
-    [Header("Audio")]
-    public AudioClip shootSound;
-    public AudioSource audioSource;
-
     private float nextFireTime = 0f;
     private Camera mainCamera;
 
@@ -33,15 +29,6 @@ public class Weapon : MonoBehaviourPun
             if (mainCamera == null)
             {
                 mainCamera = Camera.main;
-            }
-
-            if (audioSource == null)
-            {
-                audioSource = GetComponent<AudioSource>();
-                if (audioSource == null)
-                {
-                    audioSource = gameObject.AddComponent<AudioSource>();
-                }
             }
         }
     }
@@ -66,11 +53,6 @@ public class Weapon : MonoBehaviourPun
             muzzleFlash.Play();
         }
 
-        if (shootSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(shootSound);
-        }
-
         photonView.RPC("PlayShootEffectsRPC", RpcTarget.Others);
 
         for (int i = 0; i < bulletsPerShot; i++)
@@ -85,10 +67,6 @@ public class Weapon : MonoBehaviourPun
         if (muzzleFlash != null)
         {
             muzzleFlash.Play();
-        }
-        if (shootSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(shootSound);
         }
     }
 

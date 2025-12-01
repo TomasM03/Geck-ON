@@ -4,16 +4,11 @@ using Photon.Pun;
 [RequireComponent(typeof(Collider))]
 public class CoopDoorButton : MonoBehaviour
 {
-    [Header("Visual")]
-    [Tooltip("Renderer del botón para cambiar color")]
     public Renderer buttonRenderer;
 
-    [Header("UI Prompt")]
-    [Tooltip("Texto que aparece cuando el jugador está cerca")]
     public GameObject interactPrompt;
     public string promptText = "Mantener [E] para activar";
 
-    [Header("Colors (se sobreescriben por CoopDoor)")]
     public Color inactiveColor = Color.red;
     public Color activeColor = Color.green;
     public Color waitingColor = Color.yellow;
@@ -29,13 +24,11 @@ public class CoopDoorButton : MonoBehaviour
 
     void Start()
     {
-        // Obtener renderer si no está asignado
         if (buttonRenderer == null)
         {
             buttonRenderer = GetComponent<Renderer>();
         }
 
-        // Crear material instance para no afectar otros objetos
         if (buttonRenderer != null)
         {
             buttonMaterial = new Material(buttonRenderer.material);
@@ -43,29 +36,23 @@ public class CoopDoorButton : MonoBehaviour
             buttonMaterial.color = inactiveColor;
         }
 
-        // Asegurar que el collider es trigger
         Collider col = GetComponent<Collider>();
         if (col != null)
         {
             col.isTrigger = true;
         }
 
-        // Ocultar prompt al inicio
         if (interactPrompt != null)
         {
             interactPrompt.SetActive(false);
         }
     }
 
-    /// <summary>
-    /// Inicializar el botón (llamado por CoopDoor)
-    /// </summary>
     public void Initialize(CoopDoor door, int index)
     {
         parentDoor = door;
         buttonIndex = index;
 
-        // Copiar colores del parent
         inactiveColor = door.buttonInactiveColor;
         activeColor = door.buttonActiveColor;
         waitingColor = door.buttonWaitingColor;
@@ -77,7 +64,6 @@ public class CoopDoorButton : MonoBehaviour
     {
         if (!playerInRange || localPlayerPV == null || parentDoor == null) return;
 
-        // Detectar si el jugador mantiene E
         if (Input.GetKeyDown(KeyCode.E))
         {
             PressButton();
@@ -106,7 +92,6 @@ public class CoopDoorButton : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // Verificar si es el jugador local
         PhotonView pv = other.GetComponent<PhotonView>();
         if (pv == null)
         {
@@ -118,13 +103,11 @@ public class CoopDoorButton : MonoBehaviour
             playerInRange = true;
             localPlayerPV = pv;
 
-            // Obtener equipo del jugador
             if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
             {
                 localPlayerTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
             }
 
-            // Mostrar prompt
             if (interactPrompt != null)
             {
                 interactPrompt.SetActive(true);
@@ -144,7 +127,6 @@ public class CoopDoorButton : MonoBehaviour
 
         if (pv != null && pv.IsMine)
         {
-            // Si el jugador sale del rango mientras mantiene presionado, soltar
             if (isPressed)
             {
                 ReleaseButton();
@@ -154,7 +136,6 @@ public class CoopDoorButton : MonoBehaviour
             localPlayerPV = null;
             localPlayerTeam = "";
 
-            // Ocultar prompt
             if (interactPrompt != null)
             {
                 interactPrompt.SetActive(false);
@@ -163,10 +144,6 @@ public class CoopDoorButton : MonoBehaviour
             Debug.Log("CoopDoorButton: Jugador salió del rango del botón " + buttonIndex);
         }
     }
-
-    /// <summary>
-    /// Cambiar el estado visual del botón
-    /// </summary>
     public void SetVisualState(ButtonState state)
     {
         if (buttonMaterial == null) return;

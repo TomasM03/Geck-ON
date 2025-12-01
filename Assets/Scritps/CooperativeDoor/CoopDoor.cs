@@ -4,30 +4,15 @@ using System.Collections;
 
 public class CoopDoor : MonoBehaviourPun
 {
-    [Header("Door Settings")]
-    [Tooltip("El objeto de la puerta (campo de fuerza) que se desactivará")]
     public GameObject doorObject;
 
-    [Header("Button References")]
-    [Tooltip("Botón izquierdo")]
     public CoopDoorButton buttonLeft;
-    [Tooltip("Botón derecho")]
     public CoopDoorButton buttonRight;
 
-    [Header("Visual Feedback")]
-    [Tooltip("Color del botón cuando NO está siendo presionado")]
     public Color buttonInactiveColor = Color.red;
-    [Tooltip("Color del botón cuando está siendo presionado")]
     public Color buttonActiveColor = Color.green;
-    [Tooltip("Color del botón cuando está esperando al otro jugador")]
     public Color buttonWaitingColor = Color.yellow;
 
-    [Header("Audio (Opcional)")]
-    public AudioClip doorOpenSound;
-    public AudioClip buttonPressSound;
-    public AudioClip buttonReleaseSound;
-
-    private AudioSource audioSource;
     private bool isDoorOpen = false;
 
     private string leftButtonTeam = "";
@@ -35,12 +20,6 @@ public class CoopDoor : MonoBehaviourPun
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-        audioSource.spatialBlend = 1f;
 
         if (buttonLeft != null)
         {
@@ -87,8 +66,6 @@ public class CoopDoor : MonoBehaviourPun
             }
         }
 
-     //   PlaySound(buttonPressSound);
-
         UpdateWaitingStates();
 
         CheckDoorOpen();
@@ -115,8 +92,6 @@ public class CoopDoor : MonoBehaviourPun
                 buttonRight.SetVisualState(ButtonState.Inactive);
             }
         }
-
-      //  PlaySound(buttonReleaseSound);
         UpdateWaitingStates();
     }
 
@@ -157,7 +132,6 @@ public class CoopDoor : MonoBehaviourPun
         isDoorOpen = true;
         Debug.Log("CoopDoor: ¡Puerta abierta por el equipo " + leftButtonTeam + "!");
 
-     //   PlaySound(doorOpenSound);
 
         if (doorObject != null)
         {
@@ -173,14 +147,6 @@ public class CoopDoor : MonoBehaviourPun
         {
             buttonRight.SetVisualState(ButtonState.Active);
             buttonRight.enabled = false;
-        }
-    }
-
-    void PlaySound(AudioClip clip)
-    {
-        if (clip != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(clip);
         }
     }
 
