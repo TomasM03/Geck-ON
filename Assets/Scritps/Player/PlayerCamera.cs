@@ -81,7 +81,7 @@ public class PlayerCamera : MonoBehaviour
             return;
 
         HandleMouseLook();
-        HandleInput();
+        HandleScrollZoom();
     }
 
     void LateUpdate()
@@ -140,34 +140,12 @@ public class PlayerCamera : MonoBehaviour
         mainCam.transform.LookAt(lookTarget);
     }
 
-    void HandleInput()
+    void HandleScrollZoom()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ToggleCursorLock();
-        }
-
-        if (Input.GetMouseButtonDown(0) && Cursor.lockState == CursorLockMode.None)
-        {
-            LockCursor();
-        }
-
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0f)
         {
             cameraDistance = Mathf.Clamp(cameraDistance - scroll * 2f, 2f, 10f);
-        }
-    }
-
-    public void ToggleCursorLock()
-    {
-        if (Cursor.lockState == CursorLockMode.Locked)
-        {
-            UnlockCursor();
-        }
-        else
-        {
-            LockCursor();
         }
     }
 
