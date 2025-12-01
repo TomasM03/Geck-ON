@@ -65,7 +65,7 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
 
         if (notificationTimer > 0)
         {
-            notificationTimer -= Time.deltaTime;
+            notificationTimer -= Time.unscaledDeltaTime;
             if (notificationTimer <= 0 && disconnectNotificationText != null)
             {
                 disconnectNotificationText.gameObject.SetActive(false);
@@ -167,10 +167,7 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
 
         matchEnded = true;
 
-        Time.timeScale = 0f;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        UnlockCursorForUI();
 
         if (victoryPanel != null)
         {
@@ -234,11 +231,50 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
             }
         }
 
-        Invoke("AutoReturnToLobby", autoReturnDelay);
+        StartCoroutine(AutoReturnCoroutine());
     }
 
-    void AutoReturnToLobby()
+    void UnlockCursorForUI()
     {
+        Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        PhotonView[] allViews = FindObjectsOfType<PhotonView>();
+        foreach (PhotonView pv in allViews)
+        {
+            if (pv.IsMine)
+            {
+                PlayerCamera playerCam = pv.GetComponentInChildren<PlayerCamera>();
+                if (playerCam != null)
+                {
+                    playerCam.enabled = false;
+                }
+
+                PlayerController playerController = pv.GetComponent<PlayerController>();
+                if (playerController != null)
+                {
+                    playerController.enabled = false;
+                }
+
+                Weapon[] weapons = pv.GetComponentsInChildren<Weapon>();
+                foreach (Weapon weapon in weapons)
+                {
+                    weapon.enabled = false;
+                }
+            }
+        }
+    }
+
+    System.Collections.IEnumerator AutoReturnCoroutine()
+    {
+        float timer = 0f;
+        while (timer < autoReturnDelay)
+        {
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
         ReturnToLobby();
     }
 
