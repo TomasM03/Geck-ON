@@ -5,9 +5,7 @@ using Photon.Pun;
 public class CoopDoorButton : MonoBehaviour
 {
     public Renderer buttonRenderer;
-
     public GameObject interactPrompt;
-    public string promptText = "Mantener [E] para activar";
 
     public Color inactiveColor = Color.red;
     public Color activeColor = Color.green;
@@ -144,6 +142,7 @@ public class CoopDoorButton : MonoBehaviour
             Debug.Log("CoopDoorButton: Jugador salió del rango del botón " + buttonIndex);
         }
     }
+
     public void SetVisualState(ButtonState state)
     {
         if (buttonMaterial == null) return;
@@ -164,7 +163,6 @@ public class CoopDoorButton : MonoBehaviour
 
     void OnDestroy()
     {
-        // Limpiar material
         if (buttonMaterial != null)
         {
             Destroy(buttonMaterial);

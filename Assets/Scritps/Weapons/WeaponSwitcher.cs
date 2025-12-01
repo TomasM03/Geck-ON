@@ -3,24 +3,20 @@ using Photon.Pun;
 
 public class WeaponSwitcher : MonoBehaviourPun
 {
-    [Header("Weapons")]
     public GameObject pistol;
     public GameObject shotgun;
 
-    [Header("Weapon Stats")]
-    [Tooltip("Pistola")]
     public float pistolDamage = 25f;
     public float pistolFireRate = 0.15f;
     public float pistolRange = 100f;
     public int pistolBulletsPerShot = 1;
     public float pistolSpread = 0.5f;
 
-    [Tooltip("Escopeta")]
     public float shotgunDamage = 15f;
     public float shotgunFireRate = 0.8f;
     public float shotgunRange = 30f;
-    public int shotgunBulletsPerShot = 8; 
-    public float shotgunSpread = 5f; 
+    public int shotgunBulletsPerShot = 8;
+    public float shotgunSpread = 5f;
 
     private int currentWeaponIndex = 0;
     private Weapon currentWeaponScript;
@@ -28,7 +24,6 @@ public class WeaponSwitcher : MonoBehaviourPun
     void Start()
     {
         if (!photonView.IsMine) return;
-
         SwitchToWeapon(0);
     }
 

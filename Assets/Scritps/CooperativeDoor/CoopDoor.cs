@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-using System.Collections;
 
 public class CoopDoor : MonoBehaviourPun
 {
@@ -20,7 +19,6 @@ public class CoopDoor : MonoBehaviourPun
 
     void Start()
     {
-
         if (buttonLeft != null)
         {
             buttonLeft.Initialize(this, 0);
@@ -35,10 +33,12 @@ public class CoopDoor : MonoBehaviourPun
             doorObject.SetActive(true);
         }
     }
+
     public void OnButtonPressed(int buttonIndex, string playerTeam, int playerViewID)
     {
         photonView.RPC("SyncButtonPress", RpcTarget.All, buttonIndex, playerTeam, playerViewID);
     }
+
     public void OnButtonReleased(int buttonIndex)
     {
         photonView.RPC("SyncButtonRelease", RpcTarget.All, buttonIndex);
@@ -49,7 +49,7 @@ public class CoopDoor : MonoBehaviourPun
     {
         if (isDoorOpen) return;
 
-        if (buttonIndex == 0) 
+        if (buttonIndex == 0)
         {
             leftButtonTeam = playerTeam;
             if (buttonLeft != null)
@@ -67,7 +67,6 @@ public class CoopDoor : MonoBehaviourPun
         }
 
         UpdateWaitingStates();
-
         CheckDoorOpen();
     }
 
@@ -131,7 +130,6 @@ public class CoopDoor : MonoBehaviourPun
 
         isDoorOpen = true;
         Debug.Log("CoopDoor: ¡Puerta abierta por el equipo " + leftButtonTeam + "!");
-
 
         if (doorObject != null)
         {

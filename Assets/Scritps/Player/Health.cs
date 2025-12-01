@@ -4,22 +4,14 @@ using TMPro;
 
 public class Health : MonoBehaviourPun
 {
-    [Header("Health")]
     public float maxHealth = 100f;
     private float currentHealth;
 
-    [Header("UI")]
     public TMP_Text healthText;
 
-    [Header("Death")]
     public GameObject deathPanel;
-    [Tooltip("Tiempo hasta que aparece la pantalla de muerte")]
     public float deathScreenDelay = 2f;
-    [Tooltip("Tiempo hasta respawn después de la pantalla de muerte")]
     public float respawnDelay = 3f;
-
-    [Header("Visual (Optional)")]
-    public GameObject visualModel;
 
     private PlayerController playerController;
     private PlayerCamera playerCamera;
@@ -72,12 +64,10 @@ public class Health : MonoBehaviourPun
 
         isDead = true;
 
-        // Activar animación de muerte en todos los clientes inmediatamente
         photonView.RPC("PlayDeathAnimationRPC", RpcTarget.All);
 
         if (photonView.IsMine)
         {
-            // Registrar kill
             if (killerViewID != -1)
             {
                 PhotonView killerView = PhotonView.Find(killerViewID);
@@ -101,7 +91,6 @@ public class Health : MonoBehaviourPun
             if (playerController != null) playerController.enabled = false;
 
             Invoke("ShowDeathScreen", deathScreenDelay);
-
             Invoke("Respawn", deathScreenDelay + respawnDelay);
         }
     }
@@ -121,7 +110,6 @@ public class Health : MonoBehaviourPun
         if (!photonView.IsMine) return;
 
         if (deathPanel != null) deathPanel.SetActive(true);
-
         if (playerCamera != null) playerCamera.UnlockCursor();
     }
 
@@ -174,11 +162,6 @@ public class Health : MonoBehaviourPun
             else
                 healthText.color = Color.red;
         }
-    }
-
-    public float GetHealthPercent()
-    {
-        return currentHealth / maxHealth;
     }
 
     public bool IsDead()

@@ -6,16 +6,11 @@ using Photon.Realtime;
 
 public class MainMenuUI : MonoBehaviour
 {
-    [Header("UI - Nickname Screen")]
     public GameObject nicknamePanel;
     public TMP_InputField nicknameInput;
     public Button confirmNicknameButton;
     public Button quiButton;
-
-    [Header("UI - Lobby")]
-    public LobbyUI lobbyUI; 
-    
-    [Header("Leaderboard")]
+    public LobbyUI lobbyUI;
     public Button leaderboardButton;
     public LeaderboardUI leaderboardUI;
 
@@ -75,6 +70,7 @@ public class MainMenuUI : MonoBehaviour
             lobbyUI.OpenLobby();
         }
     }
+
     void OpenLeaderboard()
     {
         if (leaderboardUI != null)

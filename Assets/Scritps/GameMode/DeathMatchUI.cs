@@ -7,33 +7,38 @@ using ExitGames.Client.Photon;
 
 public class DeathMatchUI : MonoBehaviourPunCallbacks
 {
-    [Header("Score Display")]
     public TMP_Text teamAScoreText;
     public TMP_Text teamBScoreText;
     public TMP_Text targetScoreText;
 
-    [Header("Victory Panel")]
     public GameObject victoryPanel;
     public TMP_Text victoryText;
     public TMP_Text victorySubtext;
     public Button returnToLobbyButton;
 
-    [Header("Match Info")]
     public TMP_Text matchTimerText;
     public TMP_Text playerCountText;
 
-    [Header("Settings")]
+    public TMP_Text disconnectNotificationText;
+    public float notificationDuration = 3f;
+
     public string mainMenuScene = "MainMenu";
     public float autoReturnDelay = 10f;
 
     private bool matchEnded = false;
     private float matchTime = 0f;
+    private float notificationTimer = 0f;
 
     void Start()
     {
         if (victoryPanel != null)
         {
             victoryPanel.SetActive(false);
+        }
+
+        if (disconnectNotificationText != null)
+        {
+            disconnectNotificationText.gameObject.SetActive(false);
         }
 
         if (returnToLobbyButton != null)
@@ -44,6 +49,8 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
         if (TeamManager.Instance != null)
         {
             TeamManager.Instance.onMatchEnd += HandleMatchEnd;
+            TeamManager.Instance.onPlayerDisconnected += HandlePlayerDisconnected;
+            TeamManager.Instance.onTargetKillsChanged += HandleTargetKillsChanged;
         }
     }
 
@@ -55,6 +62,44 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
             UpdateScoreDisplay();
             UpdateMatchInfo();
         }
+
+        if (notificationTimer > 0)
+        {
+            notificationTimer -= Time.deltaTime;
+            if (notificationTimer <= 0 && disconnectNotificationText != null)
+            {
+                disconnectNotificationText.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    void HandlePlayerDisconnected(string team, int teamACount, int teamBCount)
+    {
+        if (disconnectNotificationText != null)
+        {
+            string teamName = team == "A" ? "Team A" : "Team B";
+            int newTarget = TeamManager.Instance.GetTargetKills();
+
+            if (teamACount == 0 || teamBCount == 0)
+            {
+                disconnectNotificationText.text = $"¡Jugador de {teamName} abandonó!\n¡Victoria por abandono!";
+            }
+            else
+            {
+                disconnectNotificationText.text = $"¡Jugador de {teamName} abandonó!\nNuevo objetivo: {newTarget} kills";
+            }
+
+            disconnectNotificationText.color = team == "A" ? new Color(0.3f, 0.6f, 1f) : new Color(1f, 0.3f, 0.3f);
+            disconnectNotificationText.gameObject.SetActive(true);
+            notificationTimer = notificationDuration;
+        }
+
+        UpdateScoreDisplay();
+    }
+
+    void HandleTargetKillsChanged(int newTarget)
+    {
+        UpdateScoreDisplay();
     }
 
     void UpdateScoreDisplay()
@@ -64,6 +109,8 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
         int teamAKills = TeamManager.Instance.GetTeamAKills();
         int teamBKills = TeamManager.Instance.GetTeamBKills();
         int targetKills = TeamManager.Instance.GetTargetKills();
+
+        if (targetKills == 0) targetKills = 1;
 
         if (teamAScoreText != null)
         {
@@ -93,7 +140,9 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
 
         if (targetScoreText != null)
         {
-            targetScoreText.text = "First to " + targetKills;
+            int teamAPlayers = TeamManager.Instance.GetTeamAPlayers();
+            int teamBPlayers = TeamManager.Instance.GetTeamBPlayers();
+            targetScoreText.text = $"First to {targetKills} ({teamAPlayers}v{teamBPlayers})";
         }
     }
 
@@ -130,32 +179,58 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
 
         if (victoryText != null)
         {
-            victoryText.text = winnerTeam + " WINS!";
+            if (winnerTeam == "Draw")
+            {
+                victoryText.text = "EMPATE";
+                victoryText.color = Color.gray;
+            }
+            else
+            {
+                victoryText.text = winnerTeam + " WINS!";
 
-            if (winnerTeam == "Team A")
-                victoryText.color = new Color(0.3f, 0.6f, 1f);
-            else if (winnerTeam == "Team B")
-                victoryText.color = new Color(1f, 0.3f, 0.3f);
+                if (winnerTeam == "Team A")
+                    victoryText.color = new Color(0.3f, 0.6f, 1f);
+                else if (winnerTeam == "Team B")
+                    victoryText.color = new Color(1f, 0.3f, 0.3f);
+            }
         }
 
         if (victorySubtext != null)
         {
-            string myTeam = "";
-            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
+            if (winnerTeam == "Draw")
             {
-                myTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
-            }
-
-            if ((myTeam == "A" && winnerTeam == "Team A") ||
-                (myTeam == "B" && winnerTeam == "Team B"))
-            {
-                victorySubtext.text = "VICTORY!";
-                victorySubtext.color = Color.green;
+                victorySubtext.text = "Todos abandonaron";
+                victorySubtext.color = Color.gray;
             }
             else
             {
-                victorySubtext.text = "DEFEAT";
-                victorySubtext.color = Color.red;
+                string myTeam = "";
+                if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
+                {
+                    myTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
+                }
+
+                bool enemyTeamEmpty = (myTeam == "A" && TeamManager.Instance.GetTeamBPlayers() == 0) ||
+                                      (myTeam == "B" && TeamManager.Instance.GetTeamAPlayers() == 0);
+
+                if ((myTeam == "A" && winnerTeam == "Team A") ||
+                    (myTeam == "B" && winnerTeam == "Team B"))
+                {
+                    if (enemyTeamEmpty)
+                    {
+                        victorySubtext.text = "¡VICTORIA POR ABANDONO!";
+                    }
+                    else
+                    {
+                        victorySubtext.text = "¡VICTORIA!";
+                    }
+                    victorySubtext.color = Color.green;
+                }
+                else
+                {
+                    victorySubtext.text = "DERROTA";
+                    victorySubtext.color = Color.red;
+                }
             }
         }
 
@@ -184,8 +259,11 @@ public class DeathMatchUI : MonoBehaviourPunCallbacks
         if (TeamManager.Instance != null)
         {
             TeamManager.Instance.onMatchEnd -= HandleMatchEnd;
+            TeamManager.Instance.onPlayerDisconnected -= HandlePlayerDisconnected;
+            TeamManager.Instance.onTargetKillsChanged -= HandleTargetKillsChanged;
         }
     }
+
     public override void OnDisconnected(Photon.Realtime.DisconnectCause cause)
     {
         Time.timeScale = 1f;

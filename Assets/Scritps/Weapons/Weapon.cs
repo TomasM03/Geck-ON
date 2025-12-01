@@ -3,20 +3,15 @@ using Photon.Pun;
 
 public class Weapon : MonoBehaviourPun
 {
-    [Header("Weapon Stats")]
     public float damage = 25f;
     public float fireRate = 0.15f;
     public float range = 100f;
     public int bulletsPerShot = 1;
     public float spread = 1f;
 
-    [Header("References")]
     public Transform firePoint;
     public LayerMask hitLayers = -1;
 
-    [Header("Visual")]
-    public ParticleSystem muzzleFlash;
-    public GameObject impactEffect;
 
     private float nextFireTime = 0f;
     private Camera mainCamera;
@@ -48,25 +43,10 @@ public class Weapon : MonoBehaviourPun
     {
         if (firePoint == null) return;
 
-        if (muzzleFlash != null)
-        {
-            muzzleFlash.Play();
-        }
-
-        photonView.RPC("PlayShootEffectsRPC", RpcTarget.Others);
 
         for (int i = 0; i < bulletsPerShot; i++)
         {
             FireRaycast();
-        }
-    }
-
-    [PunRPC]
-    void PlayShootEffectsRPC()
-    {
-        if (muzzleFlash != null)
-        {
-            muzzleFlash.Play();
         }
     }
 
@@ -133,12 +113,6 @@ public class Weapon : MonoBehaviourPun
                         CrosshairSystem.Instance.ShowHitmarker();
                     }
                 }
-            }
-
-            if (impactEffect != null)
-            {
-                GameObject impact = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(impact, 2f);
             }
         }
     }

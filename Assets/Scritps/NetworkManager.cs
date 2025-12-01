@@ -4,10 +4,7 @@ using Photon.Realtime;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    [Header("Player")]
     public GameObject playerPrefab;
-
-    [Header("Spawn Points")]
     public Transform[] teamASpawns;
     public Transform[] teamBSpawns;
 

@@ -62,11 +62,11 @@ public class LootLockerManager : MonoBehaviour
         {
             if (response.success)
             {
-                Debug.Log("Nombre de jugador seteado: " + playerName);
+                Debug.Log("Nombre de player: " + playerName);
             }
             else
             {
-                Debug.LogError("Error al setear nombre: " + response.errorData.message);
+                Debug.LogError("Error al setear name: " + response.errorData.message);
             }
         });
     }
@@ -75,7 +75,6 @@ public class LootLockerManager : MonoBehaviour
     {
         if (!isInitialized)
         {
-            Debug.LogError("LootLocker no está inicializado");
             callback?.Invoke(false);
             return;
         }
@@ -86,12 +85,10 @@ public class LootLockerManager : MonoBehaviour
         {
             if (response.success)
             {
-                Debug.Log($"Score enviado correctamente: {score}");
                 callback?.Invoke(true);
             }
             else
             {
-                Debug.LogError("Error al enviar score: " + response.errorData.message);
                 callback?.Invoke(false);
             }
         });
@@ -101,14 +98,12 @@ public class LootLockerManager : MonoBehaviour
     {
         if (!isInitialized)
         {
-            Debug.LogError("LootLocker no está inicializado");
+            Debug.LogError("LootLocker no está");
             callback?.Invoke(null);
             return;
         }
 
         string leaderboardKey = "kills_leaderboard";
-
-        Debug.Log($"Obteniendo leaderboard: {leaderboardKey}");
 
         LootLockerSDKManager.GetScoreList(leaderboardKey, count, 0, (response) =>
         {
@@ -116,18 +111,15 @@ public class LootLockerManager : MonoBehaviour
             {
                 if (response.items != null && response.items.Length > 0)
                 {
-                    Debug.Log($"Leaderboard obtenido: {response.items.Length} entradas");
                     callback?.Invoke(response.items);
                 }
                 else
                 {
-                    Debug.Log("Leaderboard está vacío (sin scores aún)");
                     callback?.Invoke(new LootLockerLeaderboardMember[0]);
                 }
             }
             else
             {
-                Debug.LogError("Error al obtener leaderboard: " + response.errorData.message);
                 callback?.Invoke(null);
             }
         });

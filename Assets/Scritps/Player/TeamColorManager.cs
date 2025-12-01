@@ -3,16 +3,12 @@ using Photon.Pun;
 
 public class TeamColorManager : MonoBehaviourPun
 {
-    [Header("Team Colors")]
     public Color teamAColor = Color.blue;
     public Color teamBColor = Color.red;
     public Color localPlayerOutline = Color.yellow;
 
-    [Header("Renderer Settings")]
     public Renderer playerRenderer;
     public bool useOutlineForLocalPlayer = true;
-
-    [Header("Material Settings")]
     public int materialIndex = 0;
 
     private Material playerMaterial;
@@ -68,21 +64,6 @@ public class TeamColorManager : MonoBehaviourPun
 
             materials[materialIndex] = playerMaterial;
             playerRenderer.materials = materials;
-        }
-    }
-
-    public void UpdateTeamColor(string newTeam)
-    {
-        if (playerMaterial != null)
-        {
-            if (newTeam == "A")
-            {
-                playerMaterial.color = teamAColor;
-            }
-            else if (newTeam == "B")
-            {
-                playerMaterial.color = teamBColor;
-            }
         }
     }
 }

@@ -5,18 +5,13 @@ using LootLocker.Requests;
 
 public class LeaderboardUI : MonoBehaviour
 {
-    [Header("UI References")]
     public GameObject leaderboardPanel;
     public Transform leaderboardContainer;
     public GameObject leaderboardEntryPrefab;
     public Button closeButton;
     public Button refreshButton;
-
-    [Header("Settings")]
     public int maxEntries = 10;
 
-    [Header("Testing")]
-    public Button testSubmitButton;
     void Start()
     {
         if (leaderboardPanel != null)
@@ -32,11 +27,6 @@ public class LeaderboardUI : MonoBehaviour
         if (refreshButton != null)
         {
             refreshButton.onClick.AddListener(RefreshLeaderboard);
-        }
-
-        if (testSubmitButton != null)
-        {
-            testSubmitButton.onClick.AddListener(TestSubmitScore);
         }
     }
 
@@ -100,7 +90,7 @@ public class LeaderboardUI : MonoBehaviour
         {
             texts[0].text = "#" + rank;
             texts[1].text = member.player.name;
-            texts[2].text = member.score.ToString() + " kills"; 
+            texts[2].text = member.score.ToString() + " kills";
         }
 
         if (rank == 1)
@@ -114,24 +104,6 @@ public class LeaderboardUI : MonoBehaviour
         else if (rank == 3)
         {
             texts[0].color = Color.red;
-        }
-    }
-
-    void TestSubmitScore()
-    {
-        if (LootLockerManager.Instance != null)
-        {
-            int randomScore = Random.Range(10, 100);
-            Debug.Log($" Enviando score de prueba: {randomScore}");
-
-            LootLockerManager.Instance.SubmitScore(randomScore, (success) =>
-            {
-                if (success)
-                {
-                    Debug.Log(" Score de prueba enviado correctamente");
-                    Invoke("RefreshLeaderboard", 1f);
-                }
-            });
         }
     }
 }

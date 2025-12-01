@@ -4,19 +4,15 @@ using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
-using System.Collections.Generic;
 
 public class LobbyUI : MonoBehaviourPunCallbacks
 {
-    [Header("UI References")]
     public GameObject lobbyPanel;
     public TMP_Text teamAPlayersText;
     public TMP_Text teamBPlayersText;
     public Button joinTeamAButton;
     public Button joinTeamBButton;
     public Button startGameButton;
-
-    [Header("Settings")]
     public string gameSceneName = "GameScene";
 
     private string myTeam = "";
@@ -101,36 +97,6 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         {
             bool canStart = PhotonNetwork.IsMasterClient && (teamACount > 0 && teamBCount > 0);
             startGameButton.interactable = canStart;
-        }
-    }
-
-    void UpdateStartButton(int teamACount, int teamBCount)
-    {
-        if (startGameButton == null) return;
-
-        bool isMaster = PhotonNetwork.IsMasterClient;
-        bool teamsReady = (teamACount > 0 && teamBCount > 0);
-
-        startGameButton.interactable = isMaster && teamsReady;
-
-        TMP_Text buttonText = startGameButton.GetComponentInChildren<TMP_Text>();
-        if (buttonText != null)
-        {
-            if (!isMaster)
-            {
-                buttonText.text = "Esperando al Host...";
-                buttonText.color = Color.gray;
-            }
-            else if (!teamsReady)
-            {
-                buttonText.text = "Necesitas 1v1 mínimo";
-                buttonText.color = Color.yellow;
-            }
-            else
-            {
-                buttonText.text = "INICIAR PARTIDA";
-                buttonText.color = Color.green;
-            }
         }
     }
 

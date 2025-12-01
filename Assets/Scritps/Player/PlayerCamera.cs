@@ -185,21 +185,6 @@ public class PlayerCamera : MonoBehaviour
         canLook = false;
     }
 
-    public void SetMouseSensitivity(float sensitivity)
-    {
-        mouseSensitivity = sensitivity;
-    }
-
-    public void SetInvertY(bool invert)
-    {
-        invertY = invert;
-    }
-
-    public void SetCameraDistance(float distance)
-    {
-        cameraDistance = Mathf.Clamp(distance, 1f, 15f);
-    }
-
     void DisableOtherAudioListeners()
     {
         AudioListener[] allListeners = FindObjectsOfType<AudioListener>();
@@ -210,24 +195,6 @@ public class PlayerCamera : MonoBehaviour
             {
                 listener.enabled = false;
             }
-        }
-    }
-
-    public void DisableCamera()
-    {
-        canLook = false;
-        if (mainCam != null)
-            mainCam.enabled = false;
-    }
-
-    public void EnableCamera()
-    {
-        if (pv != null && pv.IsMine)
-        {
-            canLook = true;
-            if (mainCam != null)
-                mainCam.enabled = true;
-            LockCursor();
         }
     }
 }

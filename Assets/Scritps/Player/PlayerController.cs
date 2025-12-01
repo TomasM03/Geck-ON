@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private static readonly int IsRunningHash = Animator.StringToHash("IsRunning");
-    private static readonly int IsDeadHash = Animator.StringToHash("IsDead");
 
     void Start()
     {
@@ -137,18 +136,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
         animator.SetBool(IsRunningHash, isRunning);
     }
 
-    public void TriggerDeathAnimation()
-    {
-        if (animator != null)
-            animator.SetBool(IsDeadHash, true);
-    }
-
-    public void ResetDeathAnimation()
-    {
-        if (animator != null)
-            animator.SetBool(IsDeadHash, false);
-    }
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -172,5 +159,4 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     public bool IsGrounded() { return isGrounded; }
     public bool IsRunning() { return isRunning; }
-    public float GetCurrentSpeed() { return isRunning ? runSpeed : walkSpeed; }
 }

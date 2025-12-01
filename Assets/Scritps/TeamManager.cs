@@ -8,7 +8,6 @@ public class TeamManager : MonoBehaviourPunCallbacks
 {
     public static TeamManager Instance;
 
-    [Header("Team Settings")]
     public int killsPerPlayer = 5;
 
     private int teamAKills = 0;
@@ -19,6 +18,8 @@ public class TeamManager : MonoBehaviourPunCallbacks
 
     public event Action<string> onMatchEnd;
     public event Action<string, int> onKillRegistered;
+    public event Action<string, int, int> onPlayerDisconnected;
+    public event Action<int> onTargetKillsChanged;
 
     void Awake()
     {
@@ -40,6 +41,9 @@ public class TeamManager : MonoBehaviourPunCallbacks
 
     void CountTeamPlayers()
     {
+        int previousTeamA = teamAPlayers;
+        int previousTeamB = teamBPlayers;
+
         teamAPlayers = 0;
         teamBPlayers = 0;
 
@@ -51,6 +55,12 @@ public class TeamManager : MonoBehaviourPunCallbacks
                 if (team == "A") teamAPlayers++;
                 else if (team == "B") teamBPlayers++;
             }
+        }
+
+        if (previousTeamA != teamAPlayers || previousTeamB != teamBPlayers)
+        {
+            int newTarget = GetTargetKills();
+            onTargetKillsChanged?.Invoke(newTarget);
         }
     }
 
@@ -78,15 +88,33 @@ public class TeamManager : MonoBehaviourPunCallbacks
     {
         if (matchEnded) return;
 
-        int targetKills = Mathf.Max(teamAPlayers, teamBPlayers) * killsPerPlayer;
+        int targetKills = GetTargetKills();
 
-        if (teamAKills >= targetKills)
+        if (teamAKills >= targetKills && targetKills > 0)
         {
             EndMatch("Team A");
         }
-        else if (teamBKills >= targetKills)
+        else if (teamBKills >= targetKills && targetKills > 0)
         {
             EndMatch("Team B");
+        }
+    }
+
+    void CheckEmptyTeam()
+    {
+        if (matchEnded) return;
+
+        if (teamAPlayers == 0 && teamBPlayers > 0)
+        {
+            EndMatch("Team B");
+        }
+        else if (teamBPlayers == 0 && teamAPlayers > 0)
+        {
+            EndMatch("Team A");
+        }
+        else if (teamAPlayers == 0 && teamBPlayers == 0)
+        {
+            EndMatch("Draw");
         }
     }
 
@@ -105,6 +133,7 @@ public class TeamManager : MonoBehaviourPunCallbacks
 
         SubmitScoresToLeaderboard(winnerTeam);
     }
+
     void SubmitScoresToLeaderboard(string winnerTeam)
     {
         if (LootLockerManager.Instance == null) return;
@@ -145,6 +174,7 @@ public class TeamManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void AnnounceWinner(string winnerTeam)
     {
+        matchEnded = true;
         onMatchEnd?.Invoke(winnerTeam);
     }
 
@@ -171,16 +201,21 @@ public class TeamManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        CountTeamPlayers();
-    }
-
-    public string GetPlayerTeam(Player player)
-    {
-        if (player.CustomProperties.ContainsKey("Team"))
+        string disconnectedTeam = "";
+        if (otherPlayer.CustomProperties.ContainsKey("Team"))
         {
-            return (string)player.CustomProperties["Team"];
+            disconnectedTeam = (string)otherPlayer.CustomProperties["Team"];
         }
-        return "";
+
+        CountTeamPlayers();
+
+        onPlayerDisconnected?.Invoke(disconnectedTeam, teamAPlayers, teamBPlayers);
+
+        if (PhotonNetwork.IsMasterClient && !matchEnded)
+        {
+            CheckEmptyTeam();
+            CheckWinCondition();
+        }
     }
 
     [PunRPC]

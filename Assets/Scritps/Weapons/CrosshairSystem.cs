@@ -1,6 +1,5 @@
 using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,15 +24,11 @@ public class CrosshairSystem : MonoBehaviour
     public float hitmarkerDuration = 0.15f;
     public float hitmarkerScale = 1.5f;
     public Vector2 hitmarkerSize = new Vector2(50f, 50f);
-
     public Vector2 crosshairSize = new Vector2(32f, 32f);
-
-    public bool showDebugRay = true;
 
     private PhotonView localPlayerPV;
     private string myTeam = "";
     private Coroutine hitmarkerCoroutine;
-
     private Camera playerCamera;
 
     public static CrosshairSystem Instance { get; private set; }
@@ -114,12 +109,6 @@ public class CrosshairSystem : MonoBehaviour
         }
 
         UpdateCrosshair();
-
-        if (showDebugRay && playerCamera != null)
-        {
-            Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-            Debug.DrawRay(ray.origin, ray.direction * detectionRange, Color.yellow);
-        }
     }
 
     void FindPlayerCamera()
@@ -256,11 +245,6 @@ public class CrosshairSystem : MonoBehaviour
 
         hitmarkerImage.enabled = false;
         hitmarkerImage.transform.localScale = originalScale;
-    }
-
-    public void UpdateMyTeam(string newTeam)
-    {
-        myTeam = newTeam;
     }
 
     private enum CrosshairState

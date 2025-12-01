@@ -4,11 +4,9 @@ using System.Collections.Generic;
 
 public class KillFeed : MonoBehaviour
 {
-    [Header("UI References")]
     public Transform feedContainer;
     public GameObject killFeedItemPrefab;
 
-    [Header("Settings")]
     public int maxFeedItems = 5;
     public float itemLifetime = 5f;
     public Color teamAColor = new Color(0.3f, 0.6f, 1f);
