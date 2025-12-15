@@ -36,6 +36,7 @@ public class WeaponSwitcher : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
         SwitchToWeapon(0);
+        UpdateUIWeapon();
     }
 
     void Update()
@@ -55,7 +56,6 @@ public class WeaponSwitcher : MonoBehaviourPun
     void SwitchToWeapon(int weaponIndex)
     {
         if (weaponIndex == currentWeaponIndex) return;
-
         currentWeaponIndex = weaponIndex;
 
         if (pistol != null) pistol.SetActive(false);
@@ -65,7 +65,6 @@ public class WeaponSwitcher : MonoBehaviourPun
         {
             pistol.SetActive(true);
             currentWeaponScript = pistol.GetComponent<Weapon>();
-
             if (currentWeaponScript != null)
             {
                 currentWeaponScript.damage = pistolDamage;
@@ -74,14 +73,11 @@ public class WeaponSwitcher : MonoBehaviourPun
                 currentWeaponScript.bulletsPerShot = pistolBulletsPerShot;
                 currentWeaponScript.spread = pistolSpread;
             }
-
-            Debug.Log("Pistola");
         }
         else if (weaponIndex == 1 && shotgun != null)
         {
             shotgun.SetActive(true);
             currentWeaponScript = shotgun.GetComponent<Weapon>();
-
             if (currentWeaponScript != null)
             {
                 currentWeaponScript.damage = shotgunDamage;
@@ -90,22 +86,10 @@ public class WeaponSwitcher : MonoBehaviourPun
                 currentWeaponScript.bulletsPerShot = shotgunBulletsPerShot;
                 currentWeaponScript.spread = shotgunSpread;
             }
-
-            Debug.Log("Escopeta");
         }
 
+        UpdateUIWeapon();
         photonView.RPC("SyncWeaponSwitch", RpcTarget.OthersBuffered, weaponIndex);
-
-        if(weaponIndex == 0)
-        {
-            weapon1.sprite = pistol1;
-            weapon2.sprite = shotgun0;
-        }
-        else if (weaponIndex == 1)
-        {
-            weapon1.sprite = pistol0;
-            weapon2.sprite = shotgun1;
-        }
     }
 
     [PunRPC]
@@ -113,5 +97,19 @@ public class WeaponSwitcher : MonoBehaviourPun
     {
         if (pistol != null) pistol.SetActive(weaponIndex == 0);
         if (shotgun != null) shotgun.SetActive(weaponIndex == 1);
+    }
+
+    private void UpdateUIWeapon()
+    {
+        if (currentWeaponIndex == 0)
+        {
+            weapon1.sprite = pistol1;
+            weapon2.sprite = shotgun0;
+        }
+        else if (currentWeaponIndex == 1)
+        {
+            weapon1.sprite = pistol0;
+            weapon2.sprite = shotgun1;
+        }
     }
 }
