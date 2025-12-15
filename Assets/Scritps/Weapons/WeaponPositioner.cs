@@ -3,7 +3,8 @@ using UnityEngine;
 public class WeaponPositioner : MonoBehaviour
 {
     public Animator animator;
-    public GameObject[] weapons;
+    public GameObject[] weapons; 
+    public GameObject weaponHolder;
     public float transitionSpeed = 10f;
 
     public WeaponState idleState;
@@ -76,19 +77,22 @@ public class WeaponPositioner : MonoBehaviour
 
     void ApplyState()
     {
-        if (targetState == null || weapons == null) return;
+        if (targetState == null) return;
 
         bool shouldHide = (targetState == slideState && hideOnSlide) ||
                           (targetState == jumpState && hideOnJump);
 
-        foreach (GameObject weapon in weapons)
+        if (weaponHolder != null)
         {
-            if (weapon == null) continue;
+            weaponHolder.SetActive(!shouldHide);
+        }
 
-            weapon.SetActive(!shouldHide);
-
-            if (!shouldHide)
+        if (!shouldHide && weapons != null)
+        {
+            foreach (GameObject weapon in weapons)
             {
+                if (weapon == null) continue;
+
                 weapon.transform.localPosition = Vector3.Lerp(
                     weapon.transform.localPosition,
                     targetState.position,
