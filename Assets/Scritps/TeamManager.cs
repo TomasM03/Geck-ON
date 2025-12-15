@@ -36,9 +36,10 @@ public class TeamManager : MonoBehaviourPunCallbacks
     void Start()
     {
         ResetMatch();
+        CountTeamPlayers();
     }
 
-    void CountTeamPlayers()
+    public void CountTeamPlayers()
     {
         int previousTeamA = teamAPlayers;
         int previousTeamB = teamBPlayers;
