@@ -1,77 +1,69 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-using TMPro;
 
 public class InteractionUIManager : MonoBehaviour
 {
-    public TMP_Text interactionPrompt;
+    [Header("UI")]
+    public Image interactionPromptImage;
 
-    public float interactionRange = 3f;
-    public LayerMask interactionLayer;
+    [Header("Raycast")]
+    public float interactionRange = 5f;
+    public LayerMask buttonLayer = ~0;
 
     private Camera playerCamera;
-    private PhotonView localPlayerPV;
+    private PhotonView photonView;
     private string localPlayerTeam = "";
     private CoopDoorButton currentButton = null;
 
     void Start()
     {
-        if (interactionPrompt != null)
+        photonView = GetComponentInParent<PhotonView>();
+
+        if (photonView == null || !photonView.IsMine)
         {
-            interactionPrompt.gameObject.SetActive(false);
+            if (interactionPromptImage != null)
+                interactionPromptImage.gameObject.SetActive(false);
+
+            enabled = false;
+            return;
         }
 
-        StartCoroutine(FindLocalPlayer());
-    }
+        if (interactionPromptImage != null)
+            interactionPromptImage.gameObject.SetActive(false);
 
-    System.Collections.IEnumerator FindLocalPlayer()
-    {
-        while (localPlayerPV == null)
+        PlayerCamera playerCam = GetComponentInChildren<PlayerCamera>();
+        if (playerCam != null && playerCam.mainCam != null)
         {
-            PhotonView[] views = FindObjectsOfType<PhotonView>();
-            foreach (PhotonView pv in views)
-            {
-                if (pv.IsMine && pv.GetComponent<PlayerController>() != null)
-                {
-                    localPlayerPV = pv;
-
-                    if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
-                    {
-                        localPlayerTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
-                    }
-
-                    PlayerCamera playerCam = pv.GetComponentInChildren<PlayerCamera>();
-                    if (playerCam != null && playerCam.mainCam != null)
-                    {
-                        playerCamera = playerCam.mainCam;
-                    }
-                    break;
-                }
-            }
-            yield return new WaitForSeconds(0.5f);
+            playerCamera = playerCam.mainCam;
         }
+
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
+        {
+            localPlayerTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
+        }
+
+        Debug.Log($"InteractionUIManager initialized - Team: {localPlayerTeam}");
     }
 
     void Update()
     {
-        if (localPlayerPV == null || playerCamera == null)
-            return;
+        if (playerCamera == null) return;
 
-        CheckInteraction();
-        HandleInteractionInput();
+        CheckForButton();
+        HandleInput();
     }
 
-    void CheckInteraction()
+    void CheckForButton()
     {
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, interactionRange, interactionLayer))
+        if (Physics.Raycast(ray.origin, ray.direction, out hit, interactionRange, buttonLayer))
         {
             CoopDoorButton button = hit.collider.GetComponent<CoopDoorButton>();
 
-            if (button != null && button.CanInteract(localPlayerPV.transform.position, localPlayerPV.transform.forward))
+            if (button != null && !button.IsActivated() && button.GetRequiredTeam() == localPlayerTeam)
             {
                 if (currentButton != button)
                 {
@@ -89,11 +81,11 @@ public class InteractionUIManager : MonoBehaviour
         }
     }
 
-    void HandleInteractionInput()
+    void HandleInput()
     {
         if (currentButton != null && Input.GetKeyDown(KeyCode.E))
         {
-            currentButton.ActivateButton(localPlayerTeam, localPlayerPV.ViewID);
+            currentButton.TryActivate(localPlayerTeam, photonView.ViewID);
             HidePrompt();
             currentButton = null;
         }
@@ -101,17 +93,17 @@ public class InteractionUIManager : MonoBehaviour
 
     void ShowPrompt()
     {
-        if (interactionPrompt != null)
+        if (interactionPromptImage != null)
         {
-            interactionPrompt.gameObject.SetActive(true);
+            interactionPromptImage.gameObject.SetActive(true);
         }
     }
 
     void HidePrompt()
     {
-        if (interactionPrompt != null)
+        if (interactionPromptImage != null)
         {
-            interactionPrompt.gameObject.SetActive(false);
+            interactionPromptImage.gameObject.SetActive(false);
         }
     }
 }
