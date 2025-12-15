@@ -35,7 +35,6 @@ public class CoopDoor : MonoBehaviourPun
     {
         if (!PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("Not master client, ignoring button activation");
             return;
         }
 
@@ -49,13 +48,11 @@ public class CoopDoor : MonoBehaviourPun
 
         if (door == null)
         {
-            Debug.LogError($"Door with ID {doorID} not found!");
             return;
         }
 
         if (door.teamRequired != team)
         {
-            Debug.Log($"Door {doorID} requires team {door.teamRequired}, got {team}");
             return;
         }
 
@@ -63,13 +60,11 @@ public class CoopDoor : MonoBehaviourPun
         {
             door.button1Pressed = true;
             door.button1Time = activationTime;
-            Debug.Log($"Door {doorID}: Button 1 pressed at {activationTime}");
         }
         else if (!door.button2Pressed)
         {
             door.button2Pressed = true;
             door.button2Time = activationTime;
-            Debug.Log($"Door {doorID}: Button 2 pressed at {activationTime}");
 
             CheckDoorOpen(door);
         }
@@ -82,7 +77,6 @@ public class CoopDoor : MonoBehaviourPun
 
         float timeDiff = Mathf.Abs(door.button1Time - door.button2Time);
 
-        Debug.Log($"Door {door.doorID}: Time difference = {timeDiff}s (max: {syncTimeWindow}s)");
 
         if (timeDiff <= syncTimeWindow)
         {
@@ -142,7 +136,5 @@ public class CoopDoor : MonoBehaviourPun
 
             ResetDoor(door);
         }
-
-        Debug.Log("All doors reset");
     }
 }

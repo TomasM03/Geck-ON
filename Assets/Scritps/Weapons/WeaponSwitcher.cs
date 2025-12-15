@@ -56,7 +56,8 @@ public class WeaponSwitcher : MonoBehaviourPun
         weapon1.color = Color.white;
         weapon2.color = Color.white;
         weapon1.enabled = true;
-        weapon2.enabled = true;
+        weapon2.enabled = true; 
+        UpdateUIWeapon();
     }
 
     void Update()

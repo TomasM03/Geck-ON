@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using TMPro;
 
 public class InteractionUIManager : MonoBehaviour
 {
-    [Header("UI")]
-    public Image interactionPromptImage;
+    public TMP_Text interactionPromptTxt;
 
-    [Header("Raycast")]
     public float interactionRange = 5f;
     public LayerMask buttonLayer = ~0;
 
@@ -22,15 +21,15 @@ public class InteractionUIManager : MonoBehaviour
 
         if (photonView == null || !photonView.IsMine)
         {
-            if (interactionPromptImage != null)
-                interactionPromptImage.gameObject.SetActive(false);
+            if (interactionPromptTxt != null)
+                interactionPromptTxt.gameObject.SetActive(false);
 
             enabled = false;
             return;
         }
 
-        if (interactionPromptImage != null)
-            interactionPromptImage.gameObject.SetActive(false);
+        if (interactionPromptTxt != null)
+            interactionPromptTxt.gameObject.SetActive(false);
 
         PlayerCamera playerCam = GetComponentInChildren<PlayerCamera>();
         if (playerCam != null && playerCam.mainCam != null)
@@ -43,7 +42,6 @@ public class InteractionUIManager : MonoBehaviour
             localPlayerTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
         }
 
-        Debug.Log($"InteractionUIManager initialized - Team: {localPlayerTeam}");
     }
 
     void Update()
@@ -93,17 +91,17 @@ public class InteractionUIManager : MonoBehaviour
 
     void ShowPrompt()
     {
-        if (interactionPromptImage != null)
+        if (interactionPromptTxt != null)
         {
-            interactionPromptImage.gameObject.SetActive(true);
-        }
+            interactionPromptTxt.gameObject.SetActive(true);
+        }   
     }
 
     void HidePrompt()
     {
-        if (interactionPromptImage != null)
+        if (interactionPromptTxt != null)
         {
-            interactionPromptImage.gameObject.SetActive(false);
-        }
+            interactionPromptTxt.gameObject.SetActive(false);
+        }   
     }
 }
