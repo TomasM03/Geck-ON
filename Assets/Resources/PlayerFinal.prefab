@@ -3220,7 +3220,7 @@ MonoBehaviour:
   groundDistance: 0.3
   groundMask:
     serializedVersion: 2
-    m_Bits: 9
+    m_Bits: 8
   standingHeight: 2
   crouchHeight: 1
   animator: {fileID: 0}
