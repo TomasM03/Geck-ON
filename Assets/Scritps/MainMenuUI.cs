@@ -13,6 +13,8 @@ public class MainMenuUI : MonoBehaviour
     public LobbyUI lobbyUI;
     public Button leaderboardButton;
     public LeaderboardUI leaderboardUI;
+    
+    private bool isConnected = false;
 
     void Start()
     {
@@ -33,6 +35,15 @@ public class MainMenuUI : MonoBehaviour
             {
                 nicknameInput.text = savedNick;
             }
+        }
+        confirmNicknameButton.interactable = false;
+    }
+    void Update()
+    {
+        if (!isConnected && PhotonNetwork.IsConnectedAndReady)
+        {
+            isConnected = true;
+            confirmNicknameButton.interactable = true;
         }
     }
 
