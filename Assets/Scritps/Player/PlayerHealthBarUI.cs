@@ -4,19 +4,16 @@ using Photon.Pun;
 
 public class PlayerHealthBarUI : MonoBehaviourPun
 {
-    [Header("Configuración de Posición")]
     public Vector3 offsetPosition = new Vector3(0, 2.2f, 0);
     public float barWidth = 120f;
     public float barHeight = 15f;
 
-    [Header("Colores de Equipo")]
     public Color teamAColor = new Color(0.2f, 0.5f, 1f);
     public Color teamBColor = new Color(1f, 0.25f, 0.25f);
     public Color backgroundColor = new Color(0.15f, 0.15f, 0.15f, 0.9f);
     public Color damageColor = new Color(1f, 1f, 1f, 0.6f);
     public Color borderColor = Color.black;
 
-    [Header("Animación")]
     public float healthSmoothSpeed = 8f;
     public float damageSmoothSpeed = 2f;
 
@@ -97,7 +94,6 @@ public class PlayerHealthBarUI : MonoBehaviourPun
 
     void CreateHealthBarUI()
     {
-        // Canvas en World Space
         GameObject canvasObj = new GameObject("HealthBarCanvas");
         canvasObj.transform.SetParent(transform);
         canvasObj.transform.localPosition = offsetPosition;
@@ -114,14 +110,12 @@ public class PlayerHealthBarUI : MonoBehaviourPun
         RectTransform canvasRect = canvasObj.GetComponent<RectTransform>();
         canvasRect.sizeDelta = new Vector2(barWidth, barHeight);
 
-        // Contenedor - anclado al centro
         healthBarContainer = new GameObject("HealthBarContainer");
         healthBarContainer.transform.SetParent(canvasObj.transform, false);
         RectTransform containerRect = healthBarContainer.AddComponent<RectTransform>();
         containerRect.anchoredPosition = Vector2.zero;
         containerRect.sizeDelta = new Vector2(barWidth, barHeight);
 
-        // Borde negro - centrado
         GameObject border = CreateUIElement("Border", healthBarContainer.transform);
         border.GetComponent<Image>().color = borderColor;
         RectTransform borderRect = border.GetComponent<RectTransform>();
@@ -131,7 +125,6 @@ public class PlayerHealthBarUI : MonoBehaviourPun
         borderRect.anchoredPosition = Vector2.zero;
         borderRect.sizeDelta = new Vector2(barWidth, barHeight);
 
-        // Fondo gris - centrado
         GameObject background = CreateUIElement("Background", healthBarContainer.transform);
         background.GetComponent<Image>().color = backgroundColor;
         RectTransform bgRect = background.GetComponent<RectTransform>();
@@ -141,28 +134,25 @@ public class PlayerHealthBarUI : MonoBehaviourPun
         bgRect.anchoredPosition = Vector2.zero;
         bgRect.sizeDelta = new Vector2(innerBarWidth, barHeight - 4);
 
-        // Posición X donde empiezan las barras (borde izquierdo del fondo)
         float leftEdge = -innerBarWidth / 2f;
 
-        // Barra de daño - anclada a la izquierda del fondo
         GameObject damage = CreateUIElement("DamageBar", healthBarContainer.transform);
         damageImage = damage.GetComponent<Image>();
         damageImage.color = damageColor;
         damageRect = damage.GetComponent<RectTransform>();
         damageRect.anchorMin = new Vector2(0.5f, 0.5f);
         damageRect.anchorMax = new Vector2(0.5f, 0.5f);
-        damageRect.pivot = new Vector2(0, 0.5f); // Pivot en la izquierda
+        damageRect.pivot = new Vector2(0, 0.5f);
         damageRect.anchoredPosition = new Vector2(leftEdge, 0);
         damageRect.sizeDelta = new Vector2(innerBarWidth, barHeight - 4);
 
-        // Barra de vida - anclada a la izquierda del fondo
         GameObject health = CreateUIElement("HealthBar", healthBarContainer.transform);
         healthImage = health.GetComponent<Image>();
         healthImage.color = GetTeamColor();
         healthRect = health.GetComponent<RectTransform>();
         healthRect.anchorMin = new Vector2(0.5f, 0.5f);
         healthRect.anchorMax = new Vector2(0.5f, 0.5f);
-        healthRect.pivot = new Vector2(0, 0.5f); // Pivot en la izquierda
+        healthRect.pivot = new Vector2(0, 0.5f);
         healthRect.anchoredPosition = new Vector2(leftEdge, 0);
         healthRect.sizeDelta = new Vector2(innerBarWidth, barHeight - 4);
     }
@@ -182,7 +172,6 @@ public class PlayerHealthBarUI : MonoBehaviourPun
 
         float currentHealthPercent = healthComponent.GetHealthPercent();
 
-        // Detectar respawn
         if (currentHealthPercent > lastHealthPercent + 0.5f)
         {
             displayedHealth = currentHealthPercent;
@@ -191,10 +180,8 @@ public class PlayerHealthBarUI : MonoBehaviourPun
 
         lastHealthPercent = currentHealthPercent;
 
-        // Suavizar la barra de vida
         displayedHealth = Mathf.Lerp(displayedHealth, currentHealthPercent, Time.deltaTime * healthSmoothSpeed);
 
-        // La barra de daño baja más lento
         if (damageDisplayHealth > displayedHealth)
         {
             damageDisplayHealth = Mathf.Lerp(damageDisplayHealth, displayedHealth, Time.deltaTime * damageSmoothSpeed);
@@ -204,11 +191,9 @@ public class PlayerHealthBarUI : MonoBehaviourPun
             damageDisplayHealth = displayedHealth;
         }
 
-        // Calcular anchos
         float healthWidth = innerBarWidth * Mathf.Clamp01(displayedHealth);
         float damageWidth = innerBarWidth * Mathf.Clamp01(damageDisplayHealth);
 
-        // Actualizar tamaños (la posición no cambia porque el pivot está a la izquierda)
         healthRect.sizeDelta = new Vector2(healthWidth, barHeight - 4);
         damageRect.sizeDelta = new Vector2(damageWidth, barHeight - 4);
     }

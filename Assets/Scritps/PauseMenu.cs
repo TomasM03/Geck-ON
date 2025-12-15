@@ -16,7 +16,6 @@ public class PauseMenu : MonoBehaviour
     private PlayerCamera playerCamera;
     private PlayerController playerController;
     private Weapon[] playerWeapons;
-    private bool wasControlEnabled = true;
 
     void Start()
     {

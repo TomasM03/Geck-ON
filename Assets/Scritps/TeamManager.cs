@@ -35,7 +35,6 @@ public class TeamManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        CountTeamPlayers();
         ResetMatch();
     }
 

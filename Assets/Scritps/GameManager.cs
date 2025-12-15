@@ -5,8 +5,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public string nickname = "";
-    public int weaponSelect = 0;
-    public bool mostrarLogs = true;
 
     void Awake()
     {
@@ -26,14 +24,7 @@ public class GameManager : MonoBehaviour
     {
         nickname = nuevoNickname;
         SaveInfos();
-        if (mostrarLogs) Debug.Log("Nickname guardado: " + nickname);
-    }
-
-    public void SetWeapon(int armaIndex)
-    {
-        weaponSelect = armaIndex;
-        SaveInfos();
-        if (mostrarLogs) Debug.Log("Arma seleccionada: " + armaIndex);
+        Debug.Log("Nickname guardado: " + nickname);
     }
 
     public string GetNickname()
@@ -46,26 +37,14 @@ public class GameManager : MonoBehaviour
         return nickname;
     }
 
-    public int GetWeapon()
-    {
-        return weaponSelect;
-    }
-
     void SaveInfos()
     {
         PlayerPrefs.SetString("PlayerNickname", nickname);
-        PlayerPrefs.SetInt("PlayerArma", weaponSelect);
         PlayerPrefs.Save();
     }
 
     void LoadInfo()
     {
         nickname = PlayerPrefs.GetString("PlayerNickname", "");
-        weaponSelect = PlayerPrefs.GetInt("PlayerArma", 0);
-
-        if (mostrarLogs)
-        {
-            Debug.Log("Datos cargados - Nickname: " + nickname + ", Arma: " + weaponSelect);
-        }
     }
 }
