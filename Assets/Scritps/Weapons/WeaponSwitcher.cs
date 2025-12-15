@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class WeaponSwitcher : MonoBehaviourPun
 {
@@ -20,6 +21,16 @@ public class WeaponSwitcher : MonoBehaviourPun
 
     private int currentWeaponIndex = 0;
     private Weapon currentWeaponScript;
+
+    public Sprite pistol0;
+    public Sprite pistol1;
+    public Sprite shotgun0;
+    public Sprite shotgun1;
+
+    public Image weapon1;
+    public Image weapon2;
+    public Image weapon3;
+
 
     void Start()
     {
@@ -84,6 +95,17 @@ public class WeaponSwitcher : MonoBehaviourPun
         }
 
         photonView.RPC("SyncWeaponSwitch", RpcTarget.OthersBuffered, weaponIndex);
+
+        if(weaponIndex == 0)
+        {
+            weapon1.sprite = pistol1;
+            weapon2.sprite = shotgun0;
+        }
+        else if (weaponIndex == 1)
+        {
+            weapon1.sprite = pistol0;
+            weapon2.sprite = shotgun1;
+        }
     }
 
     [PunRPC]
