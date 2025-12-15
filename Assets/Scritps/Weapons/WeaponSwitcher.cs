@@ -29,14 +29,34 @@ public class WeaponSwitcher : MonoBehaviourPun
 
     public Image weapon1;
     public Image weapon2;
-    public Image weapon3;
-
 
     void Start()
     {
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine)
+        {
+            if (weapon1 != null) weapon1.transform.parent.gameObject.SetActive(false);
+            if (weapon2 != null) weapon2.transform.parent.gameObject.SetActive(false);
+            return;
+        }
+
+        InitializeUI();
+
         SwitchToWeapon(0);
-        UpdateUIWeapon();
+    }
+
+    void InitializeUI()
+    {
+        if (weapon1 == null || weapon2 == null)
+        {
+            return;
+        }
+
+        weapon1.sprite = null;
+        weapon2.sprite = null;
+        weapon1.color = Color.white;
+        weapon2.color = Color.white;
+        weapon1.enabled = true;
+        weapon2.enabled = true;
     }
 
     void Update()
@@ -101,15 +121,29 @@ public class WeaponSwitcher : MonoBehaviourPun
 
     private void UpdateUIWeapon()
     {
+        if (!photonView.IsMine) return;
+
+        if (weapon1 == null || weapon2 == null)
+        {
+            return;
+        }
+
+        weapon1.sprite = null;
+        weapon2.sprite = null;
+
         if (currentWeaponIndex == 0)
         {
             weapon1.sprite = pistol1;
             weapon2.sprite = shotgun0;
+
         }
         else if (currentWeaponIndex == 1)
         {
             weapon1.sprite = pistol0;
             weapon2.sprite = shotgun1;
+
         }
+
+        Canvas.ForceUpdateCanvases();
     }
 }

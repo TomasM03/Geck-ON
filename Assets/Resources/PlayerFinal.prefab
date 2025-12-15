@@ -2651,7 +2651,6 @@ GameObject:
   - component: {fileID: 6747375891280555282}
   - component: {fileID: 5937133165780178518}
   - component: {fileID: 5942117256277769197}
-  - component: {fileID: 792843974306939979}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -2778,28 +2777,6 @@ MonoBehaviour:
   hitmarkerScale: 1.5
   hitmarkerSize: {x: 50, y: 50}
   crosshairSize: {x: 32, y: 32}
---- !u!114 &792843974306939979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6681583847669477181}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1 &6802220034009125021
 GameObject:
   m_ObjectHideFlags: 0
@@ -3287,7 +3264,6 @@ MonoBehaviour:
   shotgun1: {fileID: 21300000, guid: d4e0642fc5bb12846b0b396eca436b48, type: 3}
   weapon1: {fileID: 6038806188337138549}
   weapon2: {fileID: 2255065118202972288}
-  weapon3: {fileID: 9031607200373363662}
 --- !u!95 &1841513616428390417
 Animator:
   serializedVersion: 5
