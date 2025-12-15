@@ -5,11 +5,12 @@ public class TeamColorManager : MonoBehaviourPun
 {
     public Color teamAColor = Color.blue;
     public Color teamBColor = Color.red;
-    public Color localPlayerOutline = Color.yellow;
 
     public Renderer playerRenderer;
-    public bool useOutlineForLocalPlayer = true;
     public int materialIndex = 0;
+
+    public bool addLocalPlayerGlow = true;
+    public float glowIntensity = 0.2f;
 
     private Material playerMaterial;
 
@@ -46,24 +47,42 @@ public class TeamColorManager : MonoBehaviourPun
         {
             playerMaterial = new Material(materials[materialIndex]);
 
-            if (photonView.IsMine && useOutlineForLocalPlayer)
+            if (playerTeam == "A")
             {
-                playerMaterial.color = localPlayerOutline;
+                playerMaterial.color = teamAColor;
             }
-            else
+            else if (playerTeam == "B")
             {
-                if (playerTeam == "A")
+                playerMaterial.color = teamBColor;
+            }
+
+            if (photonView.IsMine && addLocalPlayerGlow)
+            {
+                Color currentColor = playerMaterial.color;
+                playerMaterial.color = new Color(
+                    Mathf.Min(1f, currentColor.r + glowIntensity),
+                    Mathf.Min(1f, currentColor.g + glowIntensity),
+                    Mathf.Min(1f, currentColor.b + glowIntensity),
+                    currentColor.a
+                );
+
+                if (playerMaterial.HasProperty("_EmissionColor"))
                 {
-                    playerMaterial.color = teamAColor;
-                }
-                else if (playerTeam == "B")
-                {
-                    playerMaterial.color = teamBColor;
+                    playerMaterial.EnableKeyword("_EMISSION");
+                    playerMaterial.SetColor("_EmissionColor", currentColor * 0.3f);
                 }
             }
 
             materials[materialIndex] = playerMaterial;
             playerRenderer.materials = materials;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (playerMaterial != null)
+        {
+            Destroy(playerMaterial);
         }
     }
 }

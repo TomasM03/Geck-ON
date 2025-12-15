@@ -2,13 +2,12 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 
-public class Health : MonoBehaviourPun
+public class Health : MonoBehaviourPun, IPunObservable
 {
     public float maxHealth = 100f;
     private float currentHealth;
 
     public TMP_Text healthText;
-
     public GameObject deathPanel;
     public float deathScreenDelay = 2f;
     public float respawnDelay = 3f;
@@ -17,13 +16,20 @@ public class Health : MonoBehaviourPun
     private PlayerCamera playerCamera;
     private Animator animator;
     private bool isDead = false;
+    private PlayerHealthBarUI healthBar;
+    private DamageVFX damageVFX;
+    private float networkHealth;
 
     void Start()
     {
         currentHealth = maxHealth;
+        networkHealth = maxHealth;
+
         playerController = GetComponent<PlayerController>();
         playerCamera = GetComponentInChildren<PlayerCamera>();
         animator = GetComponentInChildren<Animator>();
+        healthBar = GetComponent<PlayerHealthBarUI>();
+        damageVFX = GetComponent<DamageVFX>();
 
         UpdateHealthUI();
 
@@ -38,13 +44,28 @@ public class Health : MonoBehaviourPun
         }
     }
 
+    void Update()
+    {
+        if (!photonView.IsMine)
+        {
+            currentHealth = Mathf.Lerp(currentHealth, networkHealth, Time.deltaTime * 15f);
+        }
+    }
+
     [PunRPC]
     void TakeDamageRPC(float damage, int shooterID)
     {
         if (isDead) return;
 
         currentHealth -= damage;
+        currentHealth = Mathf.Max(0, currentHealth);
+
         UpdateHealthUI();
+
+        if (damageVFX != null)
+        {
+            damageVFX.PlayDamageEffect();
+        }
 
         if (currentHealth <= 0)
         {
@@ -132,7 +153,7 @@ public class Health : MonoBehaviourPun
             transform.position = netManager.GetSpawnPosition(myTeam);
         }
 
-        photonView.RPC("ResetToIdleRPC", RpcTarget.All);
+        photonView.RPC("RespawnRPC", RpcTarget.All);
 
         if (playerController != null) playerController.enabled = true;
         if (playerCamera != null) playerCamera.LockCursor();
@@ -140,12 +161,21 @@ public class Health : MonoBehaviourPun
     }
 
     [PunRPC]
-    void ResetToIdleRPC()
+    void RespawnRPC()
     {
+        isDead = false;
+        currentHealth = maxHealth;
+        networkHealth = maxHealth;
+
         if (animator != null)
         {
             animator.Play("Idle", 0, 0f);
             animator.SetBool("IsDead", false);
+        }
+
+        if (healthBar != null)
+        {
+            healthBar.OnRespawn();
         }
     }
 
@@ -162,6 +192,30 @@ public class Health : MonoBehaviourPun
             else
                 healthText.color = Color.red;
         }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(currentHealth);
+            stream.SendNext(isDead);
+        }
+        else
+        {
+            networkHealth = (float)stream.ReceiveNext();
+            isDead = (bool)stream.ReceiveNext();
+        }
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public float GetHealthPercent()
+    {
+        return Mathf.Clamp01(currentHealth / maxHealth);
     }
 
     public bool IsDead()
