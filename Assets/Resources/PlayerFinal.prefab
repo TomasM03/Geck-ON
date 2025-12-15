@@ -2841,14 +2841,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 8
   runSpeed: 12
+  crouchSpeed: 2.5
   jumpForce: 6
+  slideForce: 10
+  slideDuration: 0.8
   groundCheck: {fileID: 8472037358993977236}
   groundDistance: 0.3
   groundMask:
     serializedVersion: 2
     m_Bits: 9
-  matLocalPlayer: {fileID: 2100000, guid: 36d06b6a095826b42ac05913bdf6f781, type: 2}
-  matOtherPlayer: {fileID: 2100000, guid: 39cd187b1baba5b418792aa0b2545ab7, type: 2}
+  standingHeight: 2
+  crouchHeight: 1
   animator: {fileID: 0}
   animationSmoothTime: 0.1
 --- !u!114 &7325058616837176084
