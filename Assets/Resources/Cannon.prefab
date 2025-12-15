@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1892494912330358570}
   - component: {fileID: 4442670540133477344}
   m_Layer: 0
-  m_Name: Shotgun
+  m_Name: Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61,10 +61,10 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5f5423f245d03044b9b17ff3b21cf370, type: 2}
-  - {fileID: 2100000, guid: 8da20f4ce05ed674cb6faaf7502d2e93, type: 2}
-  - {fileID: 2100000, guid: 8da20f4ce05ed674cb6faaf7502d2e93, type: 2}
-  - {fileID: 2100000, guid: 5f5423f245d03044b9b17ff3b21cf370, type: 2}
+  - {fileID: 2100000, guid: 39cd187b1baba5b418792aa0b2545ab7, type: 2}
+  - {fileID: 2100000, guid: 1862d57a33bc3294ea0526ed11fb6b84, type: 2}
+  - {fileID: 2100000, guid: 39cd187b1baba5b418792aa0b2545ab7, type: 2}
+  - {fileID: 2100000, guid: 7cc2f7def2fe20745904e11fbcfbc8f5, type: 2}
   - {fileID: 2100000, guid: 7cc2f7def2fe20745904e11fbcfbc8f5, type: 2}
   - {fileID: 2100000, guid: 7cc2f7def2fe20745904e11fbcfbc8f5, type: 2}
   - {fileID: 2100000, guid: 7cc2f7def2fe20745904e11fbcfbc8f5, type: 2}
