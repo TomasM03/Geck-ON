@@ -10,12 +10,15 @@ public class Weapon : MonoBehaviourPun
     public float spread = 1f;
 
     public Transform firePoint;
+    public Transform effectPoint;
     public LayerMask hitLayers = -1;
 
 
     private float nextFireTime = 0f;
     private Camera mainCamera;
 
+    public GameObject muzzleFlashPrefab;
+    public float muzzleFlashDuration = 0.1f;
     void Start()
     {
         if (photonView.IsMine)
@@ -47,6 +50,12 @@ public class Weapon : MonoBehaviourPun
         for (int i = 0; i < bulletsPerShot; i++)
         {
             FireRaycast();
+        }
+
+        if (muzzleFlashPrefab != null && firePoint != null)
+        {
+            GameObject flash = Instantiate(muzzleFlashPrefab, effectPoint.position, effectPoint.rotation);
+            Destroy(flash, muzzleFlashDuration);
         }
     }
 
