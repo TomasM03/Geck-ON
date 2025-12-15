@@ -3,17 +3,24 @@ using Photon.Pun;
 
 public class CoopDoor : MonoBehaviourPun
 {
+    [Header("Referencias")]
     public GameObject doorObject;
-
     public CoopDoorButton buttonLeft;
     public CoopDoorButton buttonRight;
 
+    [Header("Colores de Botones")]
     public Color buttonInactiveColor = Color.red;
     public Color buttonActiveColor = Color.green;
-    public Color buttonWaitingColor = Color.yellow;
+    public Color buttonReadyColor = Color.yellow;
+
+    [Header("Configuración de Sincronización")]
+    public float syncTimeWindow = 1.5f;
 
     private bool isDoorOpen = false;
-
+    private bool leftButtonPressed = false;
+    private bool rightButtonPressed = false;
+    private float leftButtonTime = -999f;
+    private float rightButtonTime = -999f;
     private string leftButtonTeam = "";
     private string rightButtonTeam = "";
 
@@ -34,94 +41,87 @@ public class CoopDoor : MonoBehaviourPun
         }
     }
 
-    public void OnButtonPressed(int buttonIndex, string playerTeam, int playerViewID)
+    public void OnButtonActivated(int buttonIndex, string playerTeam, int playerViewID)
     {
-        photonView.RPC("SyncButtonPress", RpcTarget.All, buttonIndex, playerTeam, playerViewID);
-    }
-
-    public void OnButtonReleased(int buttonIndex)
-    {
-        photonView.RPC("SyncButtonRelease", RpcTarget.All, buttonIndex);
+        photonView.RPC("SyncButtonActivation", RpcTarget.All, buttonIndex, playerTeam, playerViewID, (float)PhotonNetwork.Time);
     }
 
     [PunRPC]
-    void SyncButtonPress(int buttonIndex, string playerTeam, int playerViewID)
+    void SyncButtonActivation(int buttonIndex, string playerTeam, int playerViewID, float activationTime)
     {
         if (isDoorOpen) return;
 
         if (buttonIndex == 0)
         {
+            leftButtonPressed = true;
+            leftButtonTime = activationTime;
             leftButtonTeam = playerTeam;
+
             if (buttonLeft != null)
             {
                 buttonLeft.SetVisualState(ButtonState.Active);
             }
+
+            Debug.Log($"CoopDoor: Botón izquierdo activado por equipo {playerTeam} a tiempo {activationTime}");
         }
-        else
+        else if (buttonIndex == 1)
         {
+            rightButtonPressed = true;
+            rightButtonTime = activationTime;
             rightButtonTeam = playerTeam;
+
             if (buttonRight != null)
             {
                 buttonRight.SetVisualState(ButtonState.Active);
             }
+
+            Debug.Log($"CoopDoor: Botón derecho activado por equipo {playerTeam} a tiempo {activationTime}");
         }
 
-        UpdateWaitingStates();
+        UpdateReadyStates();
         CheckDoorOpen();
     }
 
-    [PunRPC]
-    void SyncButtonRelease(int buttonIndex)
+    void UpdateReadyStates()
     {
         if (isDoorOpen) return;
 
-        if (buttonIndex == 0)
+        if (leftButtonPressed && !rightButtonPressed && buttonLeft != null)
         {
-            leftButtonTeam = "";
-            if (buttonLeft != null)
-            {
-                buttonLeft.SetVisualState(ButtonState.Inactive);
-            }
+            buttonLeft.SetVisualState(ButtonState.Ready);
         }
-        else
-        {
-            rightButtonTeam = "";
-            if (buttonRight != null)
-            {
-                buttonRight.SetVisualState(ButtonState.Inactive);
-            }
-        }
-        UpdateWaitingStates();
-    }
 
-    void UpdateWaitingStates()
-    {
-        bool leftActive = !string.IsNullOrEmpty(leftButtonTeam);
-        bool rightActive = !string.IsNullOrEmpty(rightButtonTeam);
-
-        if (leftActive && !rightActive && buttonLeft != null)
+        if (rightButtonPressed && !leftButtonPressed && buttonRight != null)
         {
-            buttonLeft.SetVisualState(ButtonState.Waiting);
-        }
-        if (rightActive && !leftActive && buttonRight != null)
-        {
-            buttonRight.SetVisualState(ButtonState.Waiting);
+            buttonRight.SetVisualState(ButtonState.Ready);
         }
     }
 
     void CheckDoorOpen()
     {
-        if (string.IsNullOrEmpty(leftButtonTeam) || string.IsNullOrEmpty(rightButtonTeam))
+        if (!leftButtonPressed || !rightButtonPressed)
         {
             return;
         }
+
         if (leftButtonTeam != rightButtonTeam)
         {
             Debug.Log("CoopDoor: Los jugadores son de equipos diferentes. La puerta no se abre.");
             return;
         }
 
-        OpenDoor();
+        float timeDifference = Mathf.Abs(leftButtonTime - rightButtonTime);
+        Debug.Log($"CoopDoor: Diferencia de tiempo entre botones: {timeDifference}s (máximo: {syncTimeWindow}s)");
+
+        if (timeDifference <= syncTimeWindow)
+        {
+            OpenDoor();
+        }
+        else
+        {
+            Debug.Log("CoopDoor: Los botones no fueron presionados al mismo tiempo. Reseteando...");
+            ResetButtons();
+        }
     }
 
     void OpenDoor()
@@ -129,7 +129,7 @@ public class CoopDoor : MonoBehaviourPun
         if (isDoorOpen) return;
 
         isDoorOpen = true;
-        Debug.Log("CoopDoor: ¡Puerta abierta por el equipo " + leftButtonTeam + "!");
+        Debug.Log($"CoopDoor: ¡Puerta abierta por el equipo {leftButtonTeam}!");
 
         if (doorObject != null)
         {
@@ -139,12 +139,38 @@ public class CoopDoor : MonoBehaviourPun
         if (buttonLeft != null)
         {
             buttonLeft.SetVisualState(ButtonState.Active);
-            buttonLeft.enabled = false;
         }
         if (buttonRight != null)
         {
             buttonRight.SetVisualState(ButtonState.Active);
-            buttonRight.enabled = false;
+        }
+    }
+
+    void ResetButtons()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("SyncResetButtons", RpcTarget.All);
+        }
+    }
+
+    [PunRPC]
+    void SyncResetButtons()
+    {
+        leftButtonPressed = false;
+        rightButtonPressed = false;
+        leftButtonTime = -999f;
+        rightButtonTime = -999f;
+        leftButtonTeam = "";
+        rightButtonTeam = "";
+
+        if (buttonLeft != null)
+        {
+            buttonLeft.ResetButton();
+        }
+        if (buttonRight != null)
+        {
+            buttonRight.ResetButton();
         }
     }
 
@@ -160,6 +186,10 @@ public class CoopDoor : MonoBehaviourPun
     void SyncResetDoor()
     {
         isDoorOpen = false;
+        leftButtonPressed = false;
+        rightButtonPressed = false;
+        leftButtonTime = -999f;
+        rightButtonTime = -999f;
         leftButtonTeam = "";
         rightButtonTeam = "";
 
@@ -170,19 +200,18 @@ public class CoopDoor : MonoBehaviourPun
 
         if (buttonLeft != null)
         {
-            buttonLeft.enabled = true;
-            buttonLeft.SetVisualState(ButtonState.Inactive);
+            buttonLeft.ResetButton();
         }
         if (buttonRight != null)
         {
-            buttonRight.enabled = true;
-            buttonRight.SetVisualState(ButtonState.Inactive);
+            buttonRight.ResetButton();
         }
+
+        Debug.Log("CoopDoor: Puerta reseteada completamente");
     }
-}
-public enum ButtonState
-{
-    Inactive,
-    Active,
-    Waiting
+
+    public bool IsDoorOpen()
+    {
+        return isDoorOpen;
+    }
 }

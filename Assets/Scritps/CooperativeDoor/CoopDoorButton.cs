@@ -1,24 +1,22 @@
 using UnityEngine;
 using Photon.Pun;
 
-[RequireComponent(typeof(Collider))]
 public class CoopDoorButton : MonoBehaviour
 {
+    [Header("Visual")]
     public Renderer buttonRenderer;
-    public GameObject interactPrompt;
-
     public Color inactiveColor = Color.red;
     public Color activeColor = Color.green;
-    public Color waitingColor = Color.yellow;
+    public Color readyColor = Color.yellow;
+
+    [Header("Detección")]
+    public float maxInteractionDistance = 3f;
+    public LayerMask interactionLayer;
 
     private CoopDoor parentDoor;
     private int buttonIndex;
-    private bool playerInRange = false;
-    private bool isPressed = false;
-    private PhotonView localPlayerPV;
-    private string localPlayerTeam = "";
-
     private Material buttonMaterial;
+    private bool isActivated = false;
 
     void Start()
     {
@@ -34,15 +32,9 @@ public class CoopDoorButton : MonoBehaviour
             buttonMaterial.color = inactiveColor;
         }
 
-        Collider col = GetComponent<Collider>();
-        if (col != null)
+        if (interactionLayer == 0)
         {
-            col.isTrigger = true;
-        }
-
-        if (interactPrompt != null)
-        {
-            interactPrompt.SetActive(false);
+            interactionLayer = ~0;
         }
     }
 
@@ -53,94 +45,33 @@ public class CoopDoorButton : MonoBehaviour
 
         inactiveColor = door.buttonInactiveColor;
         activeColor = door.buttonActiveColor;
-        waitingColor = door.buttonWaitingColor;
+        readyColor = door.buttonReadyColor;
 
         SetVisualState(ButtonState.Inactive);
     }
 
-    void Update()
+    public bool CanInteract(Vector3 playerPosition, Vector3 playerForward)
     {
-        if (!playerInRange || localPlayerPV == null || parentDoor == null) return;
+        if (isActivated || parentDoor == null || parentDoor.IsDoorOpen())
+            return false;
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            PressButton();
-        }
-        else if (Input.GetKeyUp(KeyCode.E))
-        {
-            ReleaseButton();
-        }
+        Vector3 toButton = transform.position - playerPosition;
+        float distance = toButton.magnitude;
+
+        if (distance > maxInteractionDistance)
+            return false;
+
+        float angle = Vector3.Angle(playerForward, toButton.normalized);
+        return angle < 45f;
     }
 
-    void PressButton()
+    public void ActivateButton(string playerTeam, int playerViewID)
     {
-        if (isPressed) return;
+        if (isActivated || parentDoor == null)
+            return;
 
-        isPressed = true;
-        parentDoor.OnButtonPressed(buttonIndex, localPlayerTeam, localPlayerPV.ViewID);
-    }
-
-    void ReleaseButton()
-    {
-        if (!isPressed) return;
-
-        isPressed = false;
-        parentDoor.OnButtonReleased(buttonIndex);
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        PhotonView pv = other.GetComponent<PhotonView>();
-        if (pv == null)
-        {
-            pv = other.GetComponentInParent<PhotonView>();
-        }
-
-        if (pv != null && pv.IsMine)
-        {
-            playerInRange = true;
-            localPlayerPV = pv;
-
-            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Team"))
-            {
-                localPlayerTeam = (string)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
-            }
-
-            if (interactPrompt != null)
-            {
-                interactPrompt.SetActive(true);
-            }
-
-            Debug.Log("CoopDoorButton: Jugador en rango del botón " + buttonIndex);
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        PhotonView pv = other.GetComponent<PhotonView>();
-        if (pv == null)
-        {
-            pv = other.GetComponentInParent<PhotonView>();
-        }
-
-        if (pv != null && pv.IsMine)
-        {
-            if (isPressed)
-            {
-                ReleaseButton();
-            }
-
-            playerInRange = false;
-            localPlayerPV = null;
-            localPlayerTeam = "";
-
-            if (interactPrompt != null)
-            {
-                interactPrompt.SetActive(false);
-            }
-
-            Debug.Log("CoopDoorButton: Jugador salió del rango del botón " + buttonIndex);
-        }
+        isActivated = true;
+        parentDoor.OnButtonActivated(buttonIndex, playerTeam, playerViewID);
     }
 
     public void SetVisualState(ButtonState state)
@@ -155,10 +86,16 @@ public class CoopDoorButton : MonoBehaviour
             case ButtonState.Active:
                 buttonMaterial.color = activeColor;
                 break;
-            case ButtonState.Waiting:
-                buttonMaterial.color = waitingColor;
+            case ButtonState.Ready:
+                buttonMaterial.color = readyColor;
                 break;
         }
+    }
+
+    public void ResetButton()
+    {
+        isActivated = false;
+        SetVisualState(ButtonState.Inactive);
     }
 
     void OnDestroy()
@@ -168,4 +105,16 @@ public class CoopDoorButton : MonoBehaviour
             Destroy(buttonMaterial);
         }
     }
+
+    public int GetButtonIndex()
+    {
+        return buttonIndex;
+    }
+}
+
+public enum ButtonState
+{
+    Inactive,
+    Active,
+    Ready
 }

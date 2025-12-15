@@ -1770,9 +1770,8 @@ GameObject:
   - component: {fileID: 438764659}
   - component: {fileID: 438764658}
   - component: {fileID: 438764656}
-  - component: {fileID: 438764657}
   - component: {fileID: 438764655}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BT2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1792,10 +1791,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonRenderer: {fileID: 438764656}
-  interactPrompt: {fileID: 0}
   inactiveColor: {r: 1, g: 0, b: 0, a: 1}
   activeColor: {r: 0, g: 1, b: 0, a: 1}
-  waitingColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  readyColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  maxInteractionDistance: 3
+  interactionLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!23 &438764656
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1838,19 +1840,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &438764657
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 438764654}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &438764658
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4780,9 +4769,8 @@ GameObject:
   - component: {fileID: 1146128466}
   - component: {fileID: 1146128465}
   - component: {fileID: 1146128463}
-  - component: {fileID: 1146128464}
   - component: {fileID: 1146128462}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BT1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4802,10 +4790,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonRenderer: {fileID: 1146128463}
-  interactPrompt: {fileID: 0}
   inactiveColor: {r: 1, g: 0, b: 0, a: 1}
   activeColor: {r: 0, g: 1, b: 0, a: 1}
-  waitingColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  readyColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  maxInteractionDistance: 3
+  interactionLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!23 &1146128463
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4848,19 +4839,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1146128464
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1146128461}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &1146128465
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5310,7 +5288,8 @@ MonoBehaviour:
   buttonRight: {fileID: 438764655}
   buttonInactiveColor: {r: 1, g: 0, b: 0, a: 1}
   buttonActiveColor: {r: 0, g: 1, b: 0, a: 1}
-  buttonWaitingColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  buttonReadyColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  syncTimeWindow: 0.5
 --- !u!4 &1355700946
 Transform:
   m_ObjectHideFlags: 0
@@ -5785,7 +5764,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1526858711}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -260.67, y: 7.97, z: 22.54}
+  m_LocalPosition: {x: -260.67, y: -1.783, z: 25.115}
   m_LocalScale: {x: 2.6, y: 5.42, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7256,7 +7235,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2032433325}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -251.09555, y: 7.97, z: 22.54}
+  m_LocalPosition: {x: -251.09555, y: -1.7829998, z: 25.115}
   m_LocalScale: {x: 15.07, y: 5.42, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7290,7 +7269,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2042158826}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -241.45001, y: 7.97, z: 22.54}
+  m_LocalPosition: {x: -241.45001, y: -1.7829998, z: 25.115}
   m_LocalScale: {x: 2.6, y: 5.42, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
