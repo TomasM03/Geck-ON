@@ -33,7 +33,10 @@ public class PlayerController : MonoBehaviour, IPunObservable
     private Vector3 networkPosition;
     private Quaternion networkRotation;
     private float currentSpeed;
-    private float speedVelocity;
+    private float speedVelocity; 
+    
+    private float airTimer;
+    public float minAirTime = 0.3f;
 
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
@@ -87,6 +90,13 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     void GroundCheck()
     {
+        if (airTimer > 0)
+        {
+            airTimer -= Time.deltaTime;
+            isGrounded = false;
+            return;
+        }
+
         if (groundCheck != null)
             isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         else
@@ -213,6 +223,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
             isGrounded = false;
+            airTimer = minAirTime;
 
             if (animator != null)
                 animator.Play("Jump");
